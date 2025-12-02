@@ -11,7 +11,7 @@ const HomePage: React.FC = () => (
     <p className="text-xl text-gray-600 dark:text-gray-400">
       This is the main landing page of our application. We focus on providing fast, reliable, and scalable solutions for modern web development, much like Vercel itself!
     </p>
-    <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="mt-8 grid col-span-1 md:grid-cols-3 gap-6">
       <FeatureCard title="Instant Deployment" description="Push to Git and your site is live globally in seconds." />
       <FeatureCard title="Global Edge Network" description="Content is served from the closest location for maximum speed." />
       <FeatureCard title="Serverless Functions" description="Run backend code on demand without managing servers." />
@@ -54,10 +54,11 @@ interface NavButtonProps {
   label: string;
   isActive: boolean;
   onClick: () => void;
-  Icon: React.FC<React.SVGProps<SVGSVGElement>>;
+  // Changed Icon type to string for Emoji
+  IconText: string; 
 }
 
-const NavButton: React.FC<NavButtonProps> = ({ label, isActive, onClick, Icon }) => (
+const NavButton: React.FC<NavButtonProps> = ({ label, isActive, onClick, IconText }) => (
   <button
     onClick={onClick}
     className={`
@@ -68,7 +69,8 @@ const NavButton: React.FC<NavButtonProps> = ({ label, isActive, onClick, Icon })
       }
     `}
   >
-    <Icon className="w-5 h-5 mr-2" />
+    {/* Rendering the emoji/text icon */}
+    <span className="text-xl mr-2 leading-none">{IconText}</span> 
     <span className="font-medium hidden sm:inline">{label}</span>
   </button>
 );
@@ -105,13 +107,13 @@ export const App: React.FC = () => {
           <nav className="flex space-x-2 p-1 bg-gray-100 dark:bg-gray-700 rounded-xl">
             <NavButton
               label="Home"
-              Icon={Home}
+              IconText="🏠" // Using Home Emoji
               isActive={currentPage === 'home'}
               onClick={() => setCurrentPage('home')}
             />
             <NavButton
               label="About Us"
-              Icon={Info}
+              IconText="ℹ️" // Using Info Emoji
               isActive={currentPage === 'about'}
               onClick={() => setCurrentPage('about')}
             />
