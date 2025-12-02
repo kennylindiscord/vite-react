@@ -8,13 +8,13 @@ type PageType = 'home' | 'about';
 const HomePage: React.FC = () => (
   <div className="p-8 space-y-4">
     <h2 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100">Welcome Home</h2>
-    <p className="text-xl text-gray-600 dark:text-gray-400">
-      This is the main landing page of our application. We focus on providing fast, reliable, and scalable solutions for modern web development, much like Vercel itself!
+    <p className="text-xl text-gray-600 dark:text-gray-400" style="text-align:center;">
+      Welcome to <b>CommunityServer</b>, the webpage catered to your specific needs and curiosity within your surrounding environment! Here you will discover:
     </p>
     <div className="mt-8 grid col-span-1 md:grid-cols-3 gap-6">
-      <FeatureCard title="Instant Deployment" description="Push to Git and your site is live globally in seconds." />
-      <FeatureCard title="Global Edge Network" description="Content is served from the closest location for maximum speed." />
-      <FeatureCard title="Serverless Functions" description="Run backend code on demand without managing servers." />
+      <FeatureCard title="Search" description="An interactive directory of community resources that allows users to search and filter the information. " />
+      <FeatureCard title="Highlights" description="A section that spotlights at least three of the community resources you have listed in your resource hub." />
+      <FeatureCard title="Recommendations" description="A form that users can submit to indicate new resources that should be added to the community resources hub." />
     </div>
   </div>
 );
