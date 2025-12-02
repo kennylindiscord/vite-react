@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Home, Info } from 'react';
 
 // Define the available page types
 type PageType = 'home' | 'about';
