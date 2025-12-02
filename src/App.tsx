@@ -127,11 +127,6 @@ export const App: React.FC = () => {
           {renderContent()}
         </div>
       </main>
-
-      {/* Simple Footer */}
-      <footer className="text-center py-4 text-sm text-gray-500 dark:text-gray-500">
-        &copy; 2024 CommunityServer App. All rights reserved.
-      </footer>
     </div>
   );
 };
