@@ -8,7 +8,7 @@ type PageType = 'home' | 'about';
 const HomePage: React.FC = () => (
   <div className="p-8 space-y-4">
     <h2 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100">Welcome Home</h2>
-    <p className="text-xl text-gray-600 dark:text-gray-400" style="text-align:center;">
+    <p className="text-xl text-gray-600 dark:text-gray-400">
       Welcome to <b>CommunityServer</b>, the webpage catered to your specific needs and curiosity within your surrounding environment! Here you will discover:
     </p>
     <div className="mt-8 grid col-span-1 md:grid-cols-3 gap-6">
