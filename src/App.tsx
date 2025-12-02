@@ -66,45 +66,33 @@ return (
 export default function Home() {
 return <h1>Welcome to Our Homepage</h1>;
 }
-*/
+ 
 
 
 export default function Services() {
 return <h1>Our Services</h1>;
 }
-*/
+ 
 
 
 export default function Communities() {
 return <h1>Community Programs</h1>;
 }
-*/
+ 
 
 
 export default function Volunteer() {
 return <h1>Volunteer Opportunities</h1>;
 }
-*/
+ 
 
 
 export default function AboutUs() {
 return <h1>About Us</h1>;
 }
-*/
+ 
 
 
-body {
-font-family: Arial, sans-serif;
-margin: 0;
-padding: 0;
-}
-nav a {
-text-decoration: none;
-color: black;
-font-weight: 600;
-}
-nav a:hover {
-text-decoration: underline;
 
-*/
+ 
 export default App
