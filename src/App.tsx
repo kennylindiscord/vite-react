@@ -23,14 +23,14 @@ const AboutPage: React.FC = () => (
   <div className="p-8 space-y-4">
     <h2 className="text-4xl font-extrabold text-gray-900 dark:text-gray-100">Our Mission</h2>
     <p className="text-xl text-gray-600 dark:text-gray-400">
-      We believe in a simpler, more effective way to build the web. Our mission is to abstract away the infrastructure complexity so developers can focus solely on building great user experiences.
+      We desire to create an interactive but easy to navigate website for users in the local community (residency) to look for staple areas of different needs. 
     </p>
     <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl shadow-lg mt-8">
       <h3 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Core Values</h3>
       <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-        <li className="flex items-center"><span className="text-blue-500 mr-2">→</span> Speed and Performance</li>
-        <li className="flex items-center"><span className="text-blue-500 mr-2">→</span> Developer Experience</li>
-        <li className="flex items-center"><span className="text-blue-500 mr-2">→</span> Continuous Innovation</li>
+        <li className="flex items-center"><span className="text-blue-500 mr-2">→</span> Efficiency and Effectiveness</li>
+        <li className="flex items-center"><span className="text-blue-500 mr-2">→</span> Awareness</li>
+        <li className="flex items-center"><span className="text-blue-500 mr-2">→</span> Reliability and Credibility</li>
       </ul>
     </div>
   </div>
