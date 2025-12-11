@@ -1,0 +1,3593 @@
+나의 말:
+vite-react-main.zip
+ZIP 아카이브
+이거 UI UX 확인이랑 코드 애러등등 좀 찾아 와 data security 랑도 County community site야 그거에맜는 ui 및 아이디어 토큰아이디어
+ChatGPT의 말:
+
+2m 21s 동안 생각함
+일단 프로젝트부터 말해줄게.
+
+1. 지금 코드에서 나는 진짜 에러 🔧
+압축 풀어서 보니까, 아직 기본 Vite + React + TS 템플릿 상태인데
+src/App.tsx 안에 컴파일 100% 깨지는 코드가 딱 하나 있어.
+
+function App() {
+  const [count, setCount] = useState(0)
+
+  return (
+    <>
+      <div>
+        ...
+          count is {count}
+        </button>
+여기 있는 ... 가 그냥 문자열도 아니고, 태그도 아니라서 JSX 문법 에러야.
+그래서 npm run dev / npm run build 하면 바로 깨질 거야.
+
+✅ 해결: ... 부분을 싹 지우고, 실제 컴포넌트 JSX로 바꿔야 해.
+
+어차피 County Community 사이트로 갈 거면, 이 기회에 아예 App.tsx를 새 UI로 갈아끼우는 게 깔끔해.
+
+2. County Community + 토큰(CountyCoin) UI용 App.tsx 예시
+아래는 탭 구조 + 토큰 대시보드가 들어간 예시야.
+지금 src/App.tsx 전체를 이걸로 교체하면 에러도 없어지고 기본 뼈대도 바로 나와.
+
+import { useState } from 'react'
+import './App.css'
+
+type NavTab = 'home' | 'events' | 'token' | 'help'
+
+interface TokenTransaction {
+  id: number
+  date: string
+  type: 'earn' | 'spend'
+  amount: number
+  description: string
+}
+
+const mockTransactions: TokenTransaction[] = [
+  {
+    id: 1,
+    date: '2025-12-01',
+    type: 'earn',
+    amount: 150,
+    description: 'Local park clean-up participation',
+  },
+  {
+    id: 2,
+    date: '2025-11-28',
+    type: 'spend',
+    amount: 80,
+    description: 'Discount at community café',
+  },
+  {
+    id: 3,
+    date: '2025-11-20',
+    type: 'earn',
+    amount: 200,
+    description: 'Attended county town-hall meeting',
+  },
+]
+
+function App() {
+  const [activeTab, setActiveTab] = useState<NavTab>('home')
+
+  return (
+    <div className="app">
+      <header className="app-header">
+        <div className="branding">
+          <div className="brand-mark">CC</div>
+          <div>
+            <h1 className="site-title">County Community</h1>
+            <p className="site-tagline">Your place for local news, events, and rewards.</p>
+          </div>
+        </div>
+        <button className="login-button" type="button">
+          Sign in / Create account
+        </button>
+      </header>
+
+      <nav className="app-nav" aria-label="Main navigation">
+        {(['home', 'events', 'token', 'help'] as NavTab[]).map((tab) => (
+          <button
+            key={tab}
+            type="button"
+            className={`nav-item ${activeTab === tab ? 'is-active' : ''}`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tabLabel(tab)}
+          </button>
+        ))}
+      </nav>
+
+      <main className="app-main">
+        {activeTab === 'home' && <HomeSection />}
+        {activeTab === 'events' && <EventsSection />}
+        {activeTab === 'token' && <TokenSection />}
+        {activeTab === 'help' && <HelpSection />}
+      </main>
+
+      <footer className="app-footer">
+        © {new Date().getFullYear()} Your County Community. All rights reserved.
+      </footer>
+    </div>
+  )
+}
+
+function tabLabel(tab: NavTab): string {
+  switch (tab) {
+    case 'home':
+      return 'Home'
+    case 'events':
+      return 'Community'
+    case 'token':
+      return 'CountyCoin'
+    case 'help':
+      return 'Help'
+  }
+}
+
+function HomeSection() {
+  return (
+    <section aria-labelledby="home-heading">
+      <h2 id="home-heading" className="section-title">
+        Welcome to your County Community
+      </h2>
+      <div className="grid-2">
+        <article className="card">
+          <h3>Quick actions</h3>
+          <ul className="action-list">
+            <li>📅 View upcoming events</li>
+            <li>💬 Join neighborhood discussions</li>
+            <li>🪙 Check your CountyCoin balance</li>
+            <li>🤝 Find volunteer opportunities</li>
+          </ul>
+        </article>
+        <article className="card">
+          <h3>Today&apos;s highlights</h3>
+          <p className="muted">
+            Short summary of what is happening in your county today. This can be updated from the
+            backend later.
+          </p>
+          <ul className="bullet-list">
+            <li>Farmers market open from 9 AM – 2 PM</li>
+            <li>Library study night for teens at 6 PM</li>
+            <li>Recycling pick-up reminder for Zone B</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  )
+}
+
+function EventsSection() {
+  return (
+    <section aria-labelledby="events-heading">
+      <h2 id="events-heading" className="section-title">
+        Community events
+      </h2>
+      <p className="muted">
+        Join local events to connect with neighbors and earn CountyCoin for participation.
+      </p>
+      <div className="list">
+        <article className="card list-item">
+          <h3>Neighborhood Clean-up</h3>
+          <p className="meta">Saturday · 10:00 AM · Riverside Park</p>
+          <p>Help keep our county clean and earn 150 CountyCoin.</p>
+        </article>
+        <article className="card list-item">
+          <h3>Teen Coding Night</h3>
+          <p className="meta">Friday · 6:00 PM · Community Tech Center</p>
+          <p>Learn basic web development and get 100 CountyCoin.</p>
+        </article>
+      </div>
+    </section>
+  )
+}
+
+function TokenSection() {
+  const balance = 2450
+  const monthlyEarned = 600
+  const monthlySpent = 320
+
+  return (
+    <section aria-labelledby="token-heading">
+      <h2 id="token-heading" className="section-title">
+        CountyCoin dashboard
+      </h2>
+      <div className="grid-2">
+        <article className="card">
+          <h3>Your balance</h3>
+          <p className="token-balance">
+            <span className="token-amount">{balance}</span> CountyCoin
+          </p>
+          <p className="muted small">
+            CountyCoin is a community reward point. There are no extra fees for residents. Your data
+            is protected and used only in anonymized form for improving county services.
+          </p>
+          <div className="token-summary">
+            <div>
+              <span className="label">Earned this month</span>
+              <span className="value positive">+{monthlyEarned}</span>
+            </div>
+            <div>
+              <span className="label">Spent this month</span>
+              <span className="value negative">-{monthlySpent}</span>
+            </div>
+          </div>
+        </article>
+
+        <article className="card">
+          <h3>Recent activity</h3>
+          <ul className="transaction-list">
+            {mockTransactions.map((t) => (
+              <li key={t.id} className="transaction-item">
+                <div>
+                  <p className="transaction-desc">{t.description}</p>
+                  <p className="transaction-meta">{t.date}</p>
+                </div>
+                <span className={`transaction-amount ${t.type === 'earn' ? 'positive' : 'negative'}`}>
+                  {t.type === 'earn' ? '+' : '-'}
+                  {t.amount}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </article>
+      </div>
+
+      <article className="card">
+        <h3>How CountyCoin works (for the county & residents)</h3>
+        <ul className="bullet-list">
+          <li>Residents earn points by joining events, volunteering, or using partner shops.</li>
+          <li>County does NOT charge transaction fees to residents.</li>
+          <li>
+            Local businesses can join as partners and pay a small monthly fee instead of per-transaction
+            fees.
+          </li>
+          <li>
+            The county uses anonymized statistics (not personal identity) to improve services and
+            apply for grants.
+          </li>
+        </ul>
+      </article>
+    </section>
+  )
+}
+
+function HelpSection() {
+  return (
+    <section aria-labelledby="help-heading">
+      <h2 id="help-heading" className="section-title">
+        Help & data security
+      </h2>
+      <div className="card">
+        <h3>Your privacy</h3>
+        <ul className="bullet-list">
+          <li>We never show your full ID or address on public pages.</li>
+          <li>All communication is sent over encrypted (HTTPS) connections.</li>
+          <li>
+            Sensitive information (like login tokens) is stored securely on the server, not in this
+            browser app.
+          </li>
+          <li>You can download or delete your data by requesting it from the county portal.</li>
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+export default App
+이렇게 바꾸면:
+
+... 에러 사라짐
+
+탭으로 Home / Events / CountyCoin / Help 나뉨
+
+나중에 백엔드 붙이기 쉽게 대시보드 구조가 잡혀 있음
+
+3. App.css에서 UI/UX 개선 포인트 🎨
+지금 App.css는 Vite 기본 스타일이라서, County 사이트 느낌이랑은 안 맞아.
+대신 이런 느낌으로 바꾸면 좋아:
+
+/* App 전체 레이아웃 */
+.app {
+  min-height: 100vh;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 헤더 – 약간 따뜻한 톤 */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  background: #fff7da; /* 연노랑 계열: 네가 좋아하는 느낌 + 공공기관도 부담 없음 */
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.branding {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: #facc15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.site-title {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.site-tagline {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.login-button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  background: #1d4ed8;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* 네비게이션 */
+.app-nav {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.nav-item {
+  flex: 1 1 120px;
+  padding: 0.6rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.nav-item.is-active {
+  background: #1d4ed8;
+  color: white;
+  border-color: #1d4ed8;
+}
+
+/* 기본 카드 */
+.card {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.2rem 1.4rem;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+}
+
+.muted {
+  color: #64748b;
+}
+
+.bullet-list {
+  padding-left: 1.1rem;
+  margin: 0.5rem 0 0;
+}
+
+.token-balance {
+  font-size: 0.95rem;
+}
+
+.token-amount {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.token-summary {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.token-summary .label {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.token-summary .value {
+  font-weight: 600;
+}
+
+.positive {
+  color: #16a34a;
+}
+
+.negative {
+  color: #dc2626;
+}
+
+/* 거래 리스트 */
+.transaction-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.9rem;
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+.transaction-meta {
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+/* 푸터 */
+.app-footer {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-align: center;
+}
+
+/* 모바일 대응 */
+@media (max-width: 640px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .login-button {
+    align-self: stretch;
+    text-align: center;
+  }
+}
+이 정도만 바꿔줘도:
+
+공공기관 느낌 + 네가 좋아하는 따뜻한 연노랑 / 귀여운 톤 같이 살고
+
+카드형 UI라 정보가 한눈에 들어옴
+
+모바일에서도 레이아웃 무너지지 않음
+
+4. Data Security 쪽에서 신경 써야 할 것들 🔐
+지금 프로젝트에는 로그인/백엔드 통신이 없어서 당장 위험한 건 없지만,
+County community 사이트로 갈 거면 보안 설계는 처음부터 같이 생각하는 게 좋아.
+
+프런트엔드에서
+API 키 / 시크릿을 프런트에 직접 넣지 않기
+
+.env에 있어도 VITE_ 프리픽스 붙은 건 결국 브라우저로 나옴 → 진짜 비밀 값은 백엔드에서만.
+
+토큰 저장 위치
+
+가능하면 HttpOnly, Secure, SameSite 쿠키로 저장 → JS에서 못 만지게.
+
+꼭 localStorage를 써야 한다면:
+
+access token 짧게(수 분)
+
+refresh token은 절대 저장 X (백엔드 쪽).
+
+개인정보 최소화
+
+화면에는 전체 주민번호, 전체 주소, 전체 전화번호 같은 거 그대로 보여주지 않기.
+
+예: Sara K***, ***-***-1234 이런 식으로 가림.
+
+입력 값 검증
+
+이메일, 전화번호, 텍스트 입력은 프런트에서 1차 검증 → 백엔드에서 2차 검증 필수.
+
+에러 메시지에 너무 자세한 시스템 정보(“SQL error …”) 같은 거 노출하지 않기.
+
+백엔드/전체 구조(기획 아이디어)
+모든 통신 HTTPS 필수 (HSTS 포함).
+
+로그인 시도 횟수 제한, CAPTCHA → 봇/무차별 대입 방어.
+
+감사 로그(누가 언제 어떤 정보에 접근했는지) 남기기.
+
+통계/데이터 분석은 익명화/집계 형태로만 사용 → “개인별 행동 추적”이 아니라 “동네별/연령대별 참여도” 수준.
+
+5. CountyCoin / 토큰 아이디어 (수수료 0원인데 County가 얻는 이득) 🪙
+네가 말한 것처럼, “수수료를 없애면 카운티가 좋은 점이 뭐냐?” 이게 핵심이잖아.
+
+아이디어 구조는 이렇게 잡을 수 있어:
+
+시민: 수수료 0원
+
+주민에게는 전송 수수료 없음.
+
+“현금처럼 쓰지만, 수수료는 없다” = 호감도↑ 참여율↑
+
+County 수익/이득 구조는 다른 데서 가져오기
+
+파트너 상점 구독료(Subscription)
+
+가맹점(카페, 마트, 학원 등)이 “CountyCoin 가맹점”으로 등록하려면
+→ 월 고정 10~30달러 같은 작은 구독료.
+
+“수수료 대신 월정액”이라 예측 가능.
+
+데이터 기반 지원금 / 그랜트
+
+토큰 사용 데이터를 “개인 정보 없이” 집계해서
+→ 어떤 동네에 지원이 필요한지, 프로그램 효과가 어떤지 증명 자료로 사용
+→州/연방/재단 그랜트(지원금) 받기.
+
+미사용 포인트(브레이키지, Breakage)
+
+일정 기간 사용 안 한 포인트는
+→ 지방 규정에 맞춰 “지역 공공 프로젝트” 예산에 자동 전환 (또는 소멸).
+
+주민에게는 미리 안내하고 동의 받기.
+
+스폰서십 / 광고
+
+예: “오늘의 이벤트” 카드 아래 “지역 병원 건강 캠페인” 배너
+→ 공공 성격 유지하면서도 약한 광고/스폰서 수익.
+
+County 입장에서의 비금전적 이득
+
+주민 참여도↑, 투표율↑, 공청회 참여↑
+
+범죄 예방, 지역 상권 활성화 등 간접 효과 → 장기적으로 예산 절감
+
+UI에선 이런 식으로 설명 섹션 하나 두면 좋아:
+
+CountyCoin 탭 아래
+
+“Residents: No transaction fees”
+
+“Businesses: Small monthly membership instead of per-transaction fees”
+
+“County: Uses anonymous data to improve services & apply for grants”
+
+정리
+코드 에러
+
+App.tsx 안의 ... 때문에 JSX 문법 에러 → 위 App.tsx 전체 코드로 교체하면 해결.
+
+UI/UX
+
+헤더 + 탭 네비 + 카드형 대시보드 구조로 바꾸고,
+
+연노랑 계열 + 심플 카드 UI로 “공공기관 + 따뜻한” 느낌 같이 가져가기.
+
+Data Security
+
+토큰은 쿠키/백엔드 위주, 프런트에서 민감 정보 최소화, HTTPS, 익명 통계 활용.
+
+토큰 아이디어
+
+시민은 수수료 0,
+
+카운티는 가맹점 구독료 + 데이터 기반 그랜트 + 미사용 포인트 + 스폰서십 등으로 이득.
+
+다음 단계로
+
+App.tsx / App.css 바꾸고
+
+나중에 백엔드 구조(로그인, 토큰 API)까지 같이 설계해볼까?
+
+나의 말:
+Data Security 쪽에서 신경 써야 할 것들 🔐
+
+지금 프로젝트에는 로그인/백엔드 통신이 없어서 당장 위험한 건 없지만,
+County community 사이트로 갈 거면 보안 설계는 처음부터 같이 생각하는 게 좋아.
+
+프런트엔드에서
+	1.	API 키 / 시크릿을 프런트에 직접 넣지 않기
+	•	.env에 있어도 VITE_ 프리픽스 붙은 건 결국 브라우저로 나옴 → 진짜 비밀 값은 백엔드에서만.
+	2.	토큰 저장 위치
+	•	가능하면 HttpOnly, Secure, SameSite 쿠키로 저장 → JS에서 못 만지게.
+	•	꼭 localStorage를 써야 한다면:
+	•	access token 짧게(수 분)
+	•	refresh token은 절대 저장 X (백엔드 쪽).
+	3.	개인정보 최소화
+	•	화면에는 전체 주민번호, 전체 주소, 전체 전화번호 같은 거 그대로 보여주지 않기.
+	•	예: Sara K***, ***-***-1234 이런 식으로 가림.
+	4.	입력 값 검증
+	•	이메일, 전화번호, 텍스트 입력은 프런트에서 1차 검증 → 백엔드에서 2차 검증 필수.
+	•	에러 메시지에 너무 자세한 시스템 정보(“SQL error …”) 같은 거 노출하지 않기.
+
+백엔드/전체 구조(기획 아이디어)
+	•	모든 통신 HTTPS 필수 (HSTS 포함).
+	•	로그인 시도 횟수 제한, CAPTCHA → 봇/무차별 대입 방어.
+	•	감사 로그(누가 언제 어떤 정보에 접근했는지) 남기기.
+	•	통계/데이터 분석은 익명화/집계 형태로만 사용 → “개인별 행동 추적”이 아니라 “동네별/연령대별 참여도” 수준.
+이거 영어로 설명하는듯이 근데 같이 
+ChatGPT의 말:
+
+11s 동안 생각함
+좋아, 이거 그대로 써도 될 수준으로 영어 설명 버전으로 정리해줄게 🔐
+(너가 쓴 포인트는 유지하면서, “설명하듯이” 자연스럽게 풀어쓴 거야.)
+
+Data Security Considerations for the County Community Site
+Even though the current project doesn’t have login or backend communication yet, it’s important to think about data security from the very beginning if this is going to become an official County community platform.
+
+Below are key points to consider for both the frontend and the overall backend/architecture.
+
+1. Frontend Security Guidelines
+1) Do not expose API keys or secrets in the frontend
+Any values that are shipped to the browser should be treated as public, even if they are defined in a .env file.
+
+In Vite, any environment variable that starts with VITE_ is bundled into the frontend and can be seen by users through the browser developer tools.
+
+True secrets (API keys, database credentials, private tokens, etc.) must only be stored and used on the backend, never directly inside the React code.
+
+This means the frontend should call secure backend endpoints, and the backend should be the only place that talks to external services using secret keys.
+
+2) Token storage strategy
+If you add authentication later (JWT, session tokens, etc.), where and how you store tokens matters for security.
+
+Prefer HttpOnly, Secure, SameSite cookies for storing authentication tokens.
+
+HttpOnly: JavaScript cannot read the cookie, which helps protect against XSS attacks.
+
+Secure: The cookie is only sent over HTTPS.
+
+SameSite: Reduces CSRF risk by controlling when cookies are sent with cross-site requests.
+
+If you must use localStorage:
+
+Store only short-lived access tokens (valid for a few minutes).
+
+Never store refresh tokens or long-term sensitive tokens in localStorage.
+Refresh tokens should stay on the backend or be managed with more restrictive mechanisms.
+
+The general rule is: minimize what the browser can access, especially for anything related to identity or long-term sessions.
+
+3) Minimize exposure of personal information in the UI
+Even if the technical system is secure, the way data is displayed on the screen can still create privacy risks.
+
+Avoid showing full identifiers like:
+
+Full social security numbers
+
+Full home addresses
+
+Full phone numbers or ID numbers
+
+Instead, partially mask sensitive information, for example:
+
+Sara K*** instead of the full name.
+
+***-***-1234 instead of the full phone number.
+
+The idea is to show enough information for the user to recognize themselves, but not enough for someone else to misuse it.
+
+4) Input validation and error handling
+Any data accepted from users (forms, search boxes, profile editing, etc.) needs to be validated and handled carefully.
+
+Validate inputs on both sides:
+
+Frontend: basic checks for format (email, phone number pattern, required fields).
+
+Backend: full validation and sanitization. Never trust input just because the frontend checked it.
+
+Avoid returning overly detailed error messages to the user, such as:
+
+SQL error: syntax error near ...
+
+full stack traces or internal exception messages.
+
+These kinds of messages can leak technical details that help attackers.
+Instead, show user-friendly messages like “Something went wrong. Please try again,” while logging the full technical error only on the server side.
+
+2. Backend & Overall Architecture Guidelines
+Even though your current project is frontend-only, the long-term plan for a County community site should include strong backend and infrastructure security practices.
+
+1) Enforce HTTPS everywhere (with HSTS)
+All communication between the browser and the server must happen over HTTPS, not HTTP.
+
+Use HSTS (HTTP Strict Transport Security) so that browsers automatically upgrade any request to HTTPS and refuse insecure connections.
+
+This protects users from attackers who might try to intercept or modify traffic (e.g., on public Wi-Fi).
+
+2) Protect login endpoints from abuse
+Authentication endpoints are a common target for bots and brute-force attacks.
+
+Limit the number of login attempts from a single IP or account within a certain time frame (rate limiting).
+
+Use CAPTCHA or similar mechanisms for suspicious patterns (too many failed attempts, strange traffic).
+
+Consider account lockout or temporary cooldown after repeated failures.
+
+This helps defend against automated scripts that try to guess passwords.
+
+3) Maintain audit logs for sensitive actions
+For a public/community system, accountability is important.
+
+Keep audit logs that record:
+
+Who accessed which sensitive data
+
+When they accessed it
+
+What actions they performed (viewed, updated, deleted, exported, etc.)
+
+Logs should be stored securely and protected from tampering.
+
+This is useful both for security investigations and for compliance with local regulations.
+
+4) Use anonymized and aggregated data for analytics
+The County may want to analyze participation and usage to improve services, but this should not turn into invasive tracking of individuals.
+
+When doing statistics or analytics:
+
+Use anonymized or aggregated data.
+
+Focus on patterns like:
+
+Participation by neighborhood or age group
+
+Event attendance rates
+
+Overall token usage trends
+
+Avoid tracking or exposing individual-level behavior histories unless absolutely necessary and with explicit consent.
+
+The goal is to support decisions like “Which areas need more events?” or “Which programs are effective?” without building a system that feels like surveillance.
+
+Summary
+For a County community platform, data security is not just about “locking things down” technically. It’s about:
+
+Not exposing secrets in the frontend
+
+Storing tokens safely
+
+Protecting users’ personal data in the UI
+
+Validating inputs and hiding internal errors
+
+Using HTTPS and defending login endpoints
+
+Tracking access through audit logs
+
+Using anonymous, aggregated data for analytics
+
+All of this together helps build a system that is safe, trustworthy, and appropriate for a public community site.
+
+필요하면 이걸 문서 섹션(예: “Data Security Guidelines” 페이지)으로 바로 넣을 수 있게 더 포멀하게도 바꿔줄 수 있고,
+혹은 학생 발표용으로 조금 더 짧게 버전도 만들어 줄 수 있어 💛
+
+나의 말:
+근데 커뮤니티면 익명도 가능해야하지 안을까
+ChatGPT의 말:
+
+9s 동안 생각함
+맞아, 커뮤니티라면 어느 정도 익명성이 있어야 사람들이 편하게 얘기할 수 있어 🫧
+근데 완전 100% 익명으로 가면 보안·악성 유저·학교/카운티 규정 쪽에서 문제가 터지기 쉬워서, 보통은
+
+🔹 바깥(화면)에서는 익명/닉네임
+🔹 안쪽(백엔드)에서는 실사용자 식별 가능
+
+이 구조로 설계해.
+
+1. “진짜 익명” vs “가짜 이름(가명, pseudonym)”
+완전 익명 (true anonymous)
+
+글 쓴 사람이 누군지 서버도 못 알아봄.
+
+장점: 사용자 입장에서는 제일 편하고 자유롭다.
+
+단점:
+
+욕설/괴롭힘/도배/범죄성 글이 올라와도 추적이 어려움
+
+학교/카운티 서비스랑 묶기가 거의 불가능
+
+가명(Pseudonym, 닉네임 기반)
+
+화면에는 SkyFox, StudentA 이런 닉네임만 보이고
+실제로는 서버 안에 user_id = 12345, 고등학생, Zone B 이런 식으로 백엔드만 아는 정보가 있음.
+
+장점:
+
+유저는 “실명 노출” 없이 활동
+
+문제 있으면 관리자 입장에서 user_id 기준으로 제재 가능
+
+참여도 통계, 포인트(CountyCoin)랑도 연결 가능
+
+👉 커뮤니티 + 공공 서비스 섞인 사이트는 거의 다 이 “가명 + 내부 식별” 방식 써.
+
+2. 너 프로젝트에 딱 맞는 구조 예시
+(1) 계정 레벨
+가입할 때:
+
+진짜 이름 / 학년 / 학교 / 거주 구역 정도는 백엔드에만 저장
+
+이건 화면에는 기본적으로 안 보여줌
+
+서버 안에는 예를 들면:
+
+user_id: 10423
+real_name: "Sara Kim"
+district: "Zone B"
+school: "Seckinger HS"
+role: "student"
+프런트에 노출되는 건:
+
+display_name: "lemon2in"
+badge: "Zone B · High school"
+이렇게 하면:
+
+친구들/타 유저에게는 닉네임 + 약간의 정보만 보여서 편하고
+
+카운티/관리자는 필요할 때만 user_id로 누구인지 확인 가능.
+
+(2) 화면(UX) 레벨 – 모드 나누기
+Official / Services 영역
+
+민원, 장학금 신청, 카운티 관련 진짜 행정 업무
+
+→ 이건 관리자에게만 실명 보이게, 일반 사용자끼리는 여전히 가명
+
+Community / Forum / Q&A 영역
+
+게시판, 질문, 정보 공유, 청소년 토론 등
+
+→ 기본은 닉네임 + 아바타만
+
+원하면 “완전 익명 글(닉네임도 숨기기)” 옵션을 줄 수도 있어
+
+다만 이 경우도 백엔드에서는 작성한 user_id는 알고 있음
+
+Anonymous Feedback / 신고 폼
+
+학교 만족도, 안전 문제 신고, 제안함 등
+
+프런트에서는 “이름/이메일 없음”으로 제출 가능하게 보이지만,
+
+백엔드는:
+
+최소한의 메타(예: auth 여부, 대충 어느 학교/지역인지) 정도만 가지고 있고
+
+IP / user_id를 저장할지 여부는 정책/법규에 따라 선택
+
+이렇게 3 레벨의 익명성을 준비해두면,
+커뮤니티 자유 + 보안/책임 사이의 밸런스를 잡기 좋음.
+
+3. 보안/안전이랑 익명을 같이 잡는 장치
+익명 허용하면, 동시에 이거 세트로 생각해야 해:
+
+🔹 신고 버튼(Report): 글/댓글마다 신고 버튼 필수
+
+🔹 모더레이션 규칙: 욕설/차별/스토킹/사칭 등 금지 항목 명확히
+
+🔹 속도 제한 (rate limiting): 같은 계정/아이피에서 일정 시간 안에 글 도배 못하게
+
+🔹 서버 로그:
+
+공개는 익명,
+
+서버는 “문제 생기면 추적 가능한 최소한의 정보” 보관
+
+🔹 청소년 보호:
+
+직접적인 신상 공유(전화번호, 주소, SNS 링크 등) 자동 필터링
+
+위험 단어 감지(자해/폭력/범죄 유도 같은 건) 후 관리자 알림
+
+너는 대상이 청소년, 학생, 카운티 쪽이라서
+“자유롭게 말하되, 진짜 위험 상황은 캐치할 수 있는 정도”가 베스트야.
+
+4. 문서에 넣을 수 있는 영어 설명 버전 ✍️
+나중에 기획서/슬라이드에 넣을 수 있게 짧은 영어 문단도 하나 줄게:
+
+We support pseudonymous participation in the County Community platform.
+Publicly, users appear with a nickname and optional profile information (for example, “Zone B · High School Student”) instead of their real name.
+Internally, the backend still keeps a secure user ID that allows the county to handle abuse, apply safety rules, and comply with local regulations.
+This design lets residents feel safe and comfortable sharing their thoughts, while still protecting the community from harassment and misuse.
+
+이걸 바탕으로 “Anonymous Mode”, “Nickname Mode” 같은 UX도 우리가 구체적으로 설계해볼 수 있어.
+
+원하면 다음 단계로:
+
+닉네임 설정 화면 UI,
+
+게시글 작성 시 “익명으로 올리기” 토글 UX,
+
+백엔드에서 user_id ↔ display_name 매핑 구조
+까지 같이 짜보자 😎
+
+나의 말:
+guidelines. These are excellent best practices for building secure web applications.
+A few notes on how these apply to Base44 apps:
+	1	API keys/secrets - Base44 handles this automatically. Secrets are stored securely via the set_secrets tool and only accessible on the backend, never exposed to the frontend.
+	2	Authentication - Base44 has built-in authentication that handles token storage securely. No need to implement JWT/session management yourself.
+	3	Input validation - Great reminder. I always validate on the frontend for UX, but the real validation happens server-side through the entity system.
+	4	HTTPS - Enforced by the platform automatically.
+	5	Rate limiting & audit logs - These would require backend functions to implement custom logic.
+Is there something specific you'd like me to build with these security considerations in mind? Or did you want to discuss how to apply any of these guidelines to a particular feature
+ 
+ChatGPT의 말:
+오 이거 답변 느낌 너무 좋아 already 👍
+조금만 다듬어서 완전 매끄러운 프로 버전으로 만들어줄게.
+
+✅ 다듬은 버전 (바로 써도 되는 답변)
+These are excellent best-practice guidelines for building secure web applications. Thanks for outlining them so clearly.
+
+Here’s how they map to Base44 apps:
+
+API keys / secrets
+Base44 handles this automatically. Secrets are stored securely using the set_secrets tool and are only accessible on the backend. They are never exposed to the frontend.
+
+Authentication
+Base44 includes built-in authentication that manages token storage securely, so there’s no need to implement your own JWT or session management layer.
+
+Input validation
+This is a great reminder. I typically validate inputs on the frontend for better UX, but the authoritative validation and enforcement happen server-side through the entity system.
+
+HTTPS
+All traffic is served over HTTPS by default, and this is enforced by the platform.
+
+Rate limiting & audit logs
+These are not automatic, but can be implemented via backend functions if we need custom logic for abuse prevention, monitoring, or compliance.
+
+Is there anything specific you’d like me to design or build with these security considerations in mind?
+For example, we could apply them to a particular feature like the County community portal, an anonymous posting flow, or the CountyCoin rewards dashboard.
+
+원래 문장 구조는 유지하면서 톤만 살짝 더 명확 + 깔끔 + 프로페셔널로 정리했어.
+만약 “학생 프로젝트” 느낌으로 조금 더 캐주얼하게 줄인 버전도 필요하면 그 스타일로 한 번 더 만들어줄게 😊
+
+나의 말:
+home
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '../utils';
+import { base44 } from '@/api/base44Client';
+import { useQuery } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Calendar, Users, Award, TrendingUp, ArrowRight, Sparkles } from 'lucide-react';
+import { format } from 'date-fns';
+
+
+export default function Home() {
+ const [user, setUser] = useState(null);
+
+
+ useEffect(() => {
+   const loadUser = async () => {
+     try {
+       const currentUser = await base44.auth.me();
+       setUser(currentUser);
+     } catch (error) {
+       setUser(null);
+     }
+   };
+   loadUser();
+ }, []);
+
+
+ const { data: upcomingEvents = [] } = useQuery({
+   queryKey: ['upcoming-events'],
+   queryFn: () => base44.entities.Event.filter({ status: 'upcoming' }, '-event_date', 3),
+ });
+
+
+ const { data: recentPosts = [] } = useQuery({
+   queryKey: ['recent-posts'],
+   queryFn: () => base44.entities.CommunityPost.list('-created_date', 3),
+ });
+
+
+ return (
+   <div className="space-y-12">
+     {/* Hero Section */}
+     <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-blue-700 to-green-600 text-white p-8 md:p-12">
+       <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-32 translate-x-32" />
+       <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full translate-y-32 -translate-x-32" />
+      
+       <div className="relative z-10 max-w-3xl">
+         <div className="flex items-center space-x-2 mb-4">
+           <Sparkles className="h-6 w-6" />
+           <span className="text-blue-100 font-medium">Welcome to Your Community</span>
+         </div>
+         <h1 className="text-4xl md:text-5xl font-bold mb-4">
+           Building Stronger Neighborhoods Together
+         </h1>
+         <p className="text-xl text-blue-100 mb-8">
+           Connect with your neighbors, participate in local events, and earn rewards for making our community better.
+         </p>
+         {!user && (
+           <Button
+             size="lg"
+             className="bg-white text-blue-600 hover:bg-blue-50"
+             onClick={() => base44.auth.redirectToLogin()}
+           >
+             Join Our Community
+             <ArrowRight className="ml-2 h-5 w-5" />
+           </Button>
+         )}
+       </div>
+     </section>
+
+
+     {/* Stats Section */}
+     <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+       <Card className="border-2 border-blue-100 bg-gradient-to-br from-blue-50 to-white">
+         <CardHeader className="pb-3">
+           <div className="flex items-center justify-between">
+             <CardTitle className="text-lg text-gray-700">Active Events</CardTitle>
+             <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+               <Calendar className="h-6 w-6 text-blue-600" />
+             </div>
+           </div>
+         </CardHeader>
+         <CardContent>
+           <p className="text-3xl font-bold text-blue-600">{upcomingEvents.length}+</p>
+           <p className="text-sm text-gray-600 mt-1">Happening this month</p>
+         </CardContent>
+       </Card>
+
+
+       <Card className="border-2 border-green-100 bg-gradient-to-br from-green-50 to-white">
+         <CardHeader className="pb-3">
+           <div className="flex items-center justify-between">
+             <CardTitle className="text-lg text-gray-700">Community Members</CardTitle>
+             <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
+               <Users className="h-6 w-6 text-green-600" />
+             </div>
+           </div>
+         </CardHeader>
+         <CardContent>
+           <p className="text-3xl font-bold text-green-600">500+</p>
+           <p className="text-sm text-gray-600 mt-1">And growing</p>
+         </CardContent>
+       </Card>
+
+
+       <Card className="border-2 border-amber-100 bg-gradient-to-br from-amber-50 to-white">
+         <CardHeader className="pb-3">
+           <div className="flex items-center justify-between">
+             <CardTitle className="text-lg text-gray-700">Tokens Earned</CardTitle>
+             <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center">
+               <Award className="h-6 w-6 text-amber-600" />
+             </div>
+           </div>
+         </CardHeader>
+         <CardContent>
+           <p className="text-3xl font-bold text-amber-600">10,000+</p>
+           <p className="text-sm text-gray-600 mt-1">By our community</p>
+         </CardContent>
+       </Card>
+     </section>
+
+
+     {/* Upcoming Events */}
+     <section>
+       <div className="flex items-center justify-between mb-6">
+         <h2 className="text-3xl font-bold text-gray-900">Upcoming Events</h2>
+         <Link to={createPageUrl('Events')}>
+           <Button variant="ghost" className="text-blue-600">
+             View All
+             <ArrowRight className="ml-2 h-4 w-4" />
+           </Button>
+         </Link>
+       </div>
+       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+         {upcomingEvents.map((event) => (
+           <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+             <div className="h-40 bg-gradient-to-br from-blue-400 to-green-400 relative">
+               {event.image_url && (
+                 <img src={event.image_url} alt={event.title} className="w-full h-full object-cover" />
+               )}
+               <div className="absolute top-3 right-3 bg-amber-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                 +{event.tokens_reward} tokens
+               </div>
+             </div>
+             <CardHeader>
+               <CardTitle className="text-lg">{event.title}</CardTitle>
+               <div className="flex items-center text-sm text-gray-600 mt-2">
+                 <Calendar className="h-4 w-4 mr-2" />
+                 {format(new Date(event.event_date), 'MMM d, yyyy • h:mm a')}
+               </div>
+             </CardHeader>
+             <CardContent>
+               <Link to={createPageUrl('Events')}>
+                 <Button className="w-full">Learn More</Button>
+               </Link>
+             </CardContent>
+           </Card>
+         ))}
+         {upcomingEvents.length === 0 && (
+           <div className="col-span-3 text-center py-12 text-gray-500">
+             <Calendar className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+             <p>No upcoming events yet. Check back soon!</p>
+           </div>
+         )}
+       </div>
+     </section>
+
+
+     {/* Community Highlights */}
+     <section>
+       <div className="flex items-center justify-between mb-6">
+         <h2 className="text-3xl font-bold text-gray-900">Community Highlights</h2>
+         <Link to={createPageUrl('Community')}>
+           <Button variant="ghost" className="text-blue-600">
+             View All
+             <ArrowRight className="ml-2 h-4 w-4" />
+           </Button>
+         </Link>
+       </div>
+       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+         {recentPosts.map((post) => (
+           <Card key={post.id} className="hover:shadow-lg transition-shadow">
+             <CardHeader>
+               <div className="flex items-center justify-between mb-2">
+                 <span className="text-xs font-semibold text-blue-600 uppercase">
+                   {post.category}
+                 </span>
+                 <span className="text-xs text-gray-500">
+                   {format(new Date(post.created_date), 'MMM d')}
+                 </span>
+               </div>
+               <CardTitle className="text-lg">{post.title}</CardTitle>
+             </CardHeader>
+             <CardContent>
+               <p className="text-gray-600 line-clamp-3">{post.content}</p>
+               <div className="mt-4 flex items-center text-sm text-gray-500">
+                 <span>By {post.author_name || 'Community Member'}</span>
+               </div>
+             </CardContent>
+           </Card>
+         ))}
+         {recentPosts.length === 0 && (
+           <div className="col-span-3 text-center py-12 text-gray-500">
+             <TrendingUp className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+             <p>No posts yet. Be the first to share!</p>
+           </div>
+         )}
+       </div>
+     </section>
+   </div>
+ );
+}
+Event 
+import React, { useState, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Calendar, MapPin, Users, Award, CheckCircle, Clock } from 'lucide-react';
+import { format } from 'date-fns';
+import { toast } from 'sonner';
+
+
+export default function Events() {
+ const [user, setUser] = useState(null);
+ const [selectedCategory, setSelectedCategory] = useState('all');
+ const queryClient = useQueryClient();
+
+
+ useEffect(() => {
+   const loadUser = async () => {
+     try {
+       const currentUser = await base44.auth.me();
+       setUser(currentUser);
+     } catch (error) {
+       setUser(null);
+     }
+   };
+   loadUser();
+ }, []);
+
+
+ const { data: events = [] } = useQuery({
+   queryKey: ['events'],
+   queryFn: () => base44.entities.Event.list('-event_date'),
+ });
+
+
+ const { data: registrations = [] } = useQuery({
+   queryKey: ['registrations', user?.email],
+   queryFn: () => user ? base44.entities.EventRegistration.filter({ user_email: user.email }) : [],
+   enabled: !!user,
+ });
+
+
+ const registerMutation = useMutation({
+   mutationFn: (eventId) => base44.entities.EventRegistration.create({
+     event_id: eventId,
+     user_email: user.email,
+     status: 'registered'
+   }),
+   onSuccess: () => {
+     queryClient.invalidateQueries(['registrations']);
+     toast.success('Successfully registered for the event!');
+   },
+ });
+
+
+ const filteredEvents = selectedCategory === 'all'
+   ? events
+   : events.filter(e => e.category === selectedCategory);
+
+
+ const isRegistered = (eventId) => {
+   return registrations.some(r => r.event_id === eventId);
+ };
+
+
+ const categoryColors = {
+   town_hall: 'bg-blue-100 text-blue-800',
+   cleanup: 'bg-green-100 text-green-800',
+   workshop: 'bg-purple-100 text-purple-800',
+   festival: 'bg-pink-100 text-pink-800',
+   sports: 'bg-orange-100 text-orange-800',
+   education: 'bg-indigo-100 text-indigo-800',
+   health: 'bg-red-100 text-red-800',
+   other: 'bg-gray-100 text-gray-800',
+ };
+
+
+ return (
+   <div className="space-y-8">
+     {/* Header */}
+     <div className="text-center">
+       <h1 className="text-4xl font-bold text-gray-900 mb-3">Community Events</h1>
+       <p className="text-lg text-gray-600">Join events and earn tokens while making our community better</p>
+     </div>
+
+
+     {/* Filters */}
+     <div className="flex justify-center">
+       <Tabs defaultValue="all" onValueChange={setSelectedCategory}>
+         <TabsList className="bg-white border border-gray-200">
+           <TabsTrigger value="all">All Events</TabsTrigger>
+           <TabsTrigger value="town_hall">Town Hall</TabsTrigger>
+           <TabsTrigger value="cleanup">Cleanup</TabsTrigger>
+           <TabsTrigger value="workshop">Workshop</TabsTrigger>
+           <TabsTrigger value="festival">Festival</TabsTrigger>
+         </TabsList>
+       </Tabs>
+     </div>
+
+
+     {/* Events Grid */}
+     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+       {filteredEvents.map((event) => {
+         const registered = isRegistered(event.id);
+         return (
+           <Card key={event.id} className="overflow-hidden hover:shadow-xl transition-all">
+             <div className="h-48 bg-gradient-to-br from-blue-400 to-green-400 relative">
+               {event.image_url && (
+                 <img src={event.image_url} alt={event.title} className="w-full h-full object-cover" />
+               )}
+               <div className="absolute top-4 right-4 bg-amber-500 text-white px-3 py-1 rounded-full text-sm font-bold flex items-center space-x-1">
+                 <Award className="h-4 w-4" />
+                 <span>+{event.tokens_reward}</span>
+               </div>
+               {event.status === 'completed' && (
+                 <div className="absolute top-4 left-4 bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                   Completed
+                 </div>
+               )}
+             </div>
+             <CardHeader>
+               <div className="flex items-start justify-between mb-2">
+                 <Badge className={categoryColors[event.category]}>
+                   {event.category.replace(/_/g, ' ')}
+                 </Badge>
+               </div>
+               <CardTitle className="text-xl">{event.title}</CardTitle>
+             </CardHeader>
+             <CardContent className="space-y-4">
+               <p className="text-gray-600 line-clamp-2">{event.description}</p>
+              
+               <div className="space-y-2">
+                 <div className="flex items-center text-sm text-gray-600">
+                   <Calendar className="h-4 w-4 mr-2 text-blue-600" />
+                   {format(new Date(event.event_date), 'MMM d, yyyy • h:mm a')}
+                 </div>
+                 {event.location && (
+                   <div className="flex items-center text-sm text-gray-600">
+                     <MapPin className="h-4 w-4 mr-2 text-green-600" />
+                     {event.location}
+                   </div>
+                 )}
+                 {event.capacity && (
+                   <div className="flex items-center text-sm text-gray-600">
+                     <Users className="h-4 w-4 mr-2 text-purple-600" />
+                     Max {event.capacity} participants
+                   </div>
+                 )}
+               </div>
+
+
+               {user ? (
+                 registered ? (
+                   <Button disabled className="w-full" variant="secondary">
+                     <CheckCircle className="h-4 w-4 mr-2" />
+                     Registered
+                   </Button>
+                 ) : (
+                   <Button
+                     onClick={() => registerMutation.mutate(event.id)}
+                     disabled={event.status !== 'upcoming'}
+                     className="w-full bg-blue-600 hover:bg-blue-700"
+                   >
+                     <Clock className="h-4 w-4 mr-2" />
+                     Register Now
+                   </Button>
+                 )
+               ) : (
+                 <Button
+                   onClick={() => base44.auth.redirectToLogin()}
+                   className="w-full"
+                 >
+                   Sign in to Register
+                 </Button>
+               )}
+             </CardContent>
+           </Card>
+         );
+       })}
+     </div>
+
+
+     {filteredEvents.length === 0 && (
+       <div className="text-center py-16">
+         <Calendar className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+         <h3 className="text-xl font-semibold text-gray-700 mb-2">No Events Found</h3>
+         <p className="text-gray-500">Check back later for upcoming community events.</p>
+       </div>
+     )}
+   </div>
+ );
+}
+
+Tokens
+import React, { useState, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Award, TrendingUp, Calendar, Users, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { format } from 'date-fns';
+
+
+export default function Tokens() {
+ const [user, setUser] = useState(null);
+
+
+ useEffect(() => {
+   const loadUser = async () => {
+     try {
+       const currentUser = await base44.auth.me();
+       setUser(currentUser);
+     } catch (error) {
+       setUser(null);
+     }
+   };
+   loadUser();
+ }, []);
+
+
+ const { data: transactions = [] } = useQuery({
+   queryKey: ['token-transactions', user?.email],
+   queryFn: () => user ? base44.entities.TokenTransaction.filter({ user_email: user.email }, '-created_date') : [],
+   enabled: !!user,
+ });
+
+
+ const totalEarned = transactions
+   .filter(t => t.amount > 0)
+   .reduce((sum, t) => sum + t.amount, 0);
+
+
+ const totalSpent = Math.abs(
+   transactions
+     .filter(t => t.amount < 0)
+     .reduce((sum, t) => sum + t.amount, 0)
+ );
+
+
+ const typeIcons = {
+   event_attendance: { icon: Calendar, color: 'text-blue-600', bg: 'bg-blue-100' },
+   post_creation: { icon: Users, color: 'text-purple-600', bg: 'bg-purple-100' },
+   volunteer: { icon: TrendingUp, color: 'text-green-600', bg: 'bg-green-100' },
+   reward_redemption: { icon: Award, color: 'text-amber-600', bg: 'bg-amber-100' },
+   admin_adjustment: { icon: Award, color: 'text-gray-600', bg: 'bg-gray-100' },
+ };
+
+
+ if (!user) {
+   return (
+     <div className="text-center py-16">
+       <Award className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+       <h2 className="text-2xl font-bold text-gray-700 mb-2">Sign In to View Your Tokens</h2>
+       <p className="text-gray-500">Track your community contributions and rewards</p>
+     </div>
+   );
+ }
+
+
+ return (
+   <div className="space-y-8">
+     {/* Header */}
+     <div className="text-center">
+       <h1 className="text-4xl font-bold text-gray-900 mb-3">Your Tokens</h1>
+       <p className="text-lg text-gray-600">Earned through community participation</p>
+     </div>
+
+
+     {/* Balance Card */}
+     <Card className="border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50">
+       <CardHeader>
+         <CardTitle className="text-center text-gray-700">Current Balance</CardTitle>
+       </CardHeader>
+       <CardContent className="text-center">
+         <div className="flex items-center justify-center space-x-3 mb-4">
+           <Award className="h-12 w-12 text-amber-600" />
+           <span className="text-6xl font-bold text-amber-600">
+             {user.token_balance || 0}
+           </span>
+         </div>
+         <p className="text-gray-600">Community Tokens</p>
+       </CardContent>
+     </Card>
+
+
+     {/* Stats */}
+     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+       <Card className="border-l-4 border-l-green-500">
+         <CardHeader className="pb-3">
+           <div className="flex items-center justify-between">
+             <CardTitle className="text-lg text-gray-700">Total Earned</CardTitle>
+             <ArrowUpRight className="h-5 w-5 text-green-600" />
+           </div>
+         </CardHeader>
+         <CardContent>
+           <p className="text-3xl font-bold text-green-600">{totalEarned}</p>
+           <p className="text-sm text-gray-600 mt-1">All time earnings</p>
+         </CardContent>
+       </Card>
+
+
+       <Card className="border-l-4 border-l-red-500">
+         <CardHeader className="pb-3">
+           <div className="flex items-center justify-between">
+             <CardTitle className="text-lg text-gray-700">Total Redeemed</CardTitle>
+             <ArrowDownRight className="h-5 w-5 text-red-600" />
+           </div>
+         </CardHeader>
+         <CardContent>
+           <p className="text-3xl font-bold text-red-600">{totalSpent}</p>
+           <p className="text-sm text-gray-600 mt-1">All time redemptions</p>
+         </CardContent>
+       </Card>
+     </div>
+
+
+     {/* Transaction History */}
+     <Card>
+       <CardHeader>
+         <CardTitle>Transaction History</CardTitle>
+       </CardHeader>
+       <CardContent>
+         <div className="space-y-4">
+           {transactions.map((transaction) => {
+             const typeConfig = typeIcons[transaction.type] || typeIcons.admin_adjustment;
+             const Icon = typeConfig.icon;
+             const isEarning = transaction.amount > 0;
+
+
+             return (
+               <div
+                 key={transaction.id}
+                 className="flex items-center justify-between p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors"
+               >
+                 <div className="flex items-center space-x-4">
+                   <div className={h-10 w-10 rounded-full ${typeConfig.bg} flex items-center justify-center}>
+                     <Icon className={h-5 w-5 ${typeConfig.color}} />
+                   </div>
+                   <div>
+                     <p className="font-semibold text-gray-900">
+                       {transaction.description || transaction.type.replace(/_/g, ' ')}
+                     </p>
+                     <p className="text-sm text-gray-500">
+                       {format(new Date(transaction.created_date), 'MMM d, yyyy • h:mm a')}
+                     </p>
+                   </div>
+                 </div>
+                 <div className="text-right">
+                   <p className={text-xl font-bold ${isEarning ? 'text-green-600' : 'text-red-600'}}>
+                     {isEarning ? '+' : ''}{transaction.amount}
+                   </p>
+                   <Badge variant="outline" className="mt-1">
+                     {transaction.type.replace(/_/g, ' ')}
+                   </Badge>
+                 </div>
+               </div>
+             );
+           })}
+           {transactions.length === 0 && (
+             <div className="text-center py-12 text-gray-500">
+               <Award className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+               <p>No transactions yet</p>
+               <p className="text-sm mt-1">Participate in events to start earning tokens!</p>
+             </div>
+           )}
+         </div>
+       </CardContent>
+     </Card>
+
+
+     {/* How to Earn */}
+     <Card className="bg-gradient-to-br from-blue-50 to-green-50">
+       <CardHeader>
+         <CardTitle>How to Earn Tokens</CardTitle>
+       </CardHeader>
+       <CardContent>
+         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+           <div className="flex items-start space-x-3">
+             <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+               <Calendar className="h-4 w-4 text-blue-600" />
+             </div>
+             <div>
+               <p className="font-semibold text-gray-900">Attend Events</p>
+               <p className="text-sm text-gray-600">Join community events and activities</p>
+             </div>
+           </div>
+           <div className="flex items-start space-x-3">
+             <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+               <Users className="h-4 w-4 text-purple-600" />
+             </div>
+             <div>
+               <p className="font-semibold text-gray-900">Create Posts</p>
+               <p className="text-sm text-gray-600">Share updates and engage with neighbors</p>
+             </div>
+           </div>
+           <div className="flex items-start space-x-3">
+             <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+               <TrendingUp className="h-4 w-4 text-green-600" />
+             </div>
+             <div>
+               <p className="font-semibold text-gray-900">Volunteer</p>
+               <p className="text-sm text-gray-600">Help out in community projects</p>
+             </div>
+           </div>
+           <div className="flex items-start space-x-3">
+             <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+               <Award className="h-4 w-4 text-amber-600" />
+             </div>
+             <div>
+               <p className="font-semibold text-gray-900">Special Rewards</p>
+               <p className="text-sm text-gray-600">Earn bonus tokens for achievements</p>
+             </div>
+           </div>
+         </div>
+       </CardContent>
+     </Card>
+   </div>
+ );
+}
+community 
+import React, { useState, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { MessageSquare, Heart, Plus, X } from 'lucide-react';
+import { format } from 'date-fns';
+import { toast } from 'sonner';
+
+
+export default function Community() {
+ const [user, setUser] = useState(null);
+ const [showCreateForm, setShowCreateForm] = useState(false);
+ const [newPost, setNewPost] = useState({ title: '', content: '', category: 'discussion' });
+ const queryClient = useQueryClient();
+
+
+ useEffect(() => {
+   const loadUser = async () => {
+     try {
+       const currentUser = await base44.auth.me();
+       setUser(currentUser);
+     } catch (error) {
+       setUser(null);
+     }
+   };
+   loadUser();
+ }, []);
+
+
+ const { data: posts = [] } = useQuery({
+   queryKey: ['community-posts'],
+   queryFn: () => base44.entities.CommunityPost.list('-created_date'),
+ });
+
+
+ const createPostMutation = useMutation({
+   mutationFn: async (postData) => {
+     await base44.entities.CommunityPost.create(postData);
+     await base44.entities.TokenTransaction.create({
+       user_email: user.email,
+       amount: 5,
+       type: 'post_creation',
+       description: 'Created a community post'
+     });
+     const updatedUser = await base44.auth.me();
+     await base44.auth.updateMe({ token_balance: (updatedUser.token_balance || 0) + 5 });
+   },
+   onSuccess: () => {
+     queryClient.invalidateQueries(['community-posts']);
+     setShowCreateForm(false);
+     setNewPost({ title: '', content: '', category: 'discussion' });
+     toast.success('Post created! You earned 5 tokens.');
+   },
+ });
+
+
+ const handleCreatePost = () => {
+   if (!newPost.title || !newPost.content) {
+     toast.error('Please fill in all fields');
+     return;
+   }
+   createPostMutation.mutate({
+     ...newPost,
+     author_email: user.email,
+     author_name: user.full_name,
+   });
+ };
+
+
+ const categoryColors = {
+   announcement: 'bg-blue-100 text-blue-800',
+   discussion: 'bg-purple-100 text-purple-800',
+   question: 'bg-green-100 text-green-800',
+   idea: 'bg-amber-100 text-amber-800',
+   news: 'bg-red-100 text-red-800',
+ };
+
+
+ return (
+   <div className="space-y-8">
+     {/* Header */}
+     <div className="flex items-center justify-between">
+       <div>
+         <h1 className="text-4xl font-bold text-gray-900 mb-2">Community Board</h1>
+         <p className="text-lg text-gray-600">Connect and share with your neighbors</p>
+       </div>
+       {user && (
+         <Button
+           onClick={() => setShowCreateForm(!showCreateForm)}
+           className="bg-blue-600 hover:bg-blue-700"
+         >
+           {showCreateForm ? (
+             <>
+               <X className="h-4 w-4 mr-2" /> Cancel
+             </>
+           ) : (
+             <>
+               <Plus className="h-4 w-4 mr-2" /> New Post
+             </>
+           )}
+         </Button>
+       )}
+     </div>
+
+
+     {/* Create Post Form */}
+     {showCreateForm && (
+       <Card className="border-2 border-blue-200 bg-blue-50/50">
+         <CardHeader>
+           <CardTitle>Create New Post</CardTitle>
+           <p className="text-sm text-gray-600">Share your thoughts with the community (+5 tokens)</p>
+         </CardHeader>
+         <CardContent className="space-y-4">
+           <div>
+             <Input
+               placeholder="Post title"
+               value={newPost.title}
+               onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+             />
+           </div>
+           <div>
+             <Textarea
+               placeholder="What's on your mind?"
+               value={newPost.content}
+               onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
+               className="min-h-32"
+             />
+           </div>
+           <div className="flex items-center space-x-2">
+             <span className="text-sm font-medium text-gray-700">Category:</span>
+             <div className="flex flex-wrap gap-2">
+               {['announcement', 'discussion', 'question', 'idea', 'news'].map((category) => (
+                 <Badge
+                   key={category}
+                   className={cursor-pointer ${
+                     newPost.category === category
+                       ? categoryColors[category]
+                       : 'bg-gray-200 text-gray-700'
+                   }}
+                   onClick={() => setNewPost({ ...newPost, category })}
+                 >
+                   {category}
+                 </Badge>
+               ))}
+             </div>
+           </div>
+           <Button
+             onClick={handleCreatePost}
+             disabled={createPostMutation.isPending}
+             className="w-full"
+           >
+             {createPostMutation.isPending ? 'Posting...' : 'Post to Community'}
+           </Button>
+         </CardContent>
+       </Card>
+     )}
+
+
+     {/* Posts List */}
+     <div className="space-y-6">
+       {posts.map((post) => (
+         <Card key={post.id} className="hover:shadow-lg transition-shadow">
+           <CardHeader>
+             <div className="flex items-start justify-between">
+               <div className="flex-1">
+                 <div className="flex items-center space-x-2 mb-2">
+                   <Badge className={categoryColors[post.category]}>
+                     {post.category}
+                   </Badge>
+                   <span className="text-sm text-gray-500">
+                     {format(new Date(post.created_date), 'MMM d, yyyy')}
+                   </span>
+                 </div>
+                 <CardTitle className="text-2xl mb-2">{post.title}</CardTitle>
+                 <p className="text-sm text-gray-600">
+                   By {post.author_name || 'Community Member'}
+                 </p>
+               </div>
+             </div>
+           </CardHeader>
+           <CardContent className="space-y-4">
+             <p className="text-gray-700 whitespace-pre-wrap">{post.content}</p>
+            
+             {post.image_url && (
+               <img
+                 src={post.image_url}
+                 alt={post.title}
+                 className="w-full rounded-lg"
+               />
+             )}
+
+
+             <div className="flex items-center space-x-4 pt-4 border-t">
+               <Button variant="ghost" size="sm" className="text-gray-600">
+                 <Heart className="h-4 w-4 mr-2" />
+                 {post.likes || 0} Likes
+               </Button>
+               <Button variant="ghost" size="sm" className="text-gray-600">
+                 <MessageSquare className="h-4 w-4 mr-2" />
+                 Comment
+               </Button>
+             </div>
+           </CardContent>
+         </Card>
+       ))}
+     </div>
+
+
+     {posts.length === 0 && (
+       <div className="text-center py-16">
+         <MessageSquare className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+         <h3 className="text-xl font-semibold text-gray-700 mb-2">No Posts Yet</h3>
+         <p className="text-gray-500 mb-4">Be the first to share something with the community!</p>
+         {user && (
+           <Button onClick={() => setShowCreateForm(true)}>
+             Create First Post
+           </Button>
+         )}
+       </div>
+     )}
+
+
+     {!user && (
+       <Card className="bg-blue-50 border-blue-200">
+         <CardContent className="text-center py-8">
+           <p className="text-gray-700 mb-4">Sign in to create posts and engage with the community</p>
+           <Button onClick={() => base44.auth.redirectToLogin()}>
+             Sign In
+           </Button>
+         </CardContent>
+       </Card>
+     )}
+   </div>
+ );
+}
+profile
+import React, { useState, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { User, Award, Save } from 'lucide-react';
+import { toast } from 'sonner';
+
+
+export default function Profile() {
+ const [user, setUser] = useState(null);
+ const [formData, setFormData] = useState({
+   full_name: '',
+   neighborhood: '',
+   phone: '',
+   bio: '',
+ });
+ const queryClient = useQueryClient();
+
+
+ useEffect(() => {
+   const loadUser = async () => {
+     try {
+       const currentUser = await base44.auth.me();
+       setUser(currentUser);
+       setFormData({
+         full_name: currentUser.full_name || '',
+         neighborhood: currentUser.neighborhood || '',
+         phone: currentUser.phone || '',
+         bio: currentUser.bio || '',
+       });
+     } catch (error) {
+       base44.auth.redirectToLogin();
+     }
+   };
+   loadUser();
+ }, []);
+
+
+ const updateProfileMutation = useMutation({
+   mutationFn: (data) => base44.auth.updateMe(data),
+   onSuccess: async () => {
+     const updatedUser = await base44.auth.me();
+     setUser(updatedUser);
+     toast.success('Profile updated successfully!');
+   },
+ });
+
+
+ const handleSubmit = (e) => {
+   e.preventDefault();
+   updateProfileMutation.mutate(formData);
+ };
+
+
+ if (!user) {
+   return (
+     <div className="flex items-center justify-center min-h-[60vh]">
+       <p className="text-gray-500">Loading...</p>
+     </div>
+   );
+ }
+
+
+ return (
+   <div className="max-w-4xl mx-auto space-y-8">
+     {/* Header */}
+     <div className="text-center">
+       <h1 className="text-4xl font-bold text-gray-900 mb-2">My Profile</h1>
+       <p className="text-lg text-gray-600">Manage your community profile</p>
+     </div>
+
+
+     {/* Token Balance Card */}
+     <Card className="border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50">
+       <CardContent className="flex items-center justify-between py-6">
+         <div className="flex items-center space-x-4">
+           <div className="h-16 w-16 rounded-full bg-amber-100 flex items-center justify-center">
+             <Award className="h-8 w-8 text-amber-600" />
+           </div>
+           <div>
+             <p className="text-sm text-gray-600">Your Token Balance</p>
+             <p className="text-3xl font-bold text-amber-600">{user.token_balance || 0}</p>
+           </div>
+         </div>
+         <div className="text-right">
+           <p className="text-sm text-gray-600">Member Since</p>
+           <p className="font-semibold text-gray-900">
+             {new Date(user.created_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+           </p>
+         </div>
+       </CardContent>
+     </Card>
+
+
+     {/* Profile Form */}
+     <Card>
+       <CardHeader>
+         <CardTitle className="flex items-center space-x-2">
+           <User className="h-5 w-5" />
+           <span>Personal Information</span>
+         </CardTitle>
+       </CardHeader>
+       <CardContent>
+         <form onSubmit={handleSubmit} className="space-y-6">
+           <div className="space-y-2">
+             <Label htmlFor="email">Email</Label>
+             <Input
+               id="email"
+               type="email"
+               value={user.email}
+               disabled
+               className="bg-gray-100"
+             />
+             <p className="text-xs text-gray-500">Email cannot be changed</p>
+           </div>
+
+
+           <div className="space-y-2">
+             <Label htmlFor="full_name">Full Name</Label>
+             <Input
+               id="full_name"
+               value={formData.full_name}
+               onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+               placeholder="Enter your full name"
+             />
+           </div>
+
+
+           <div className="space-y-2">
+             <Label htmlFor="neighborhood">Neighborhood</Label>
+             <Input
+               id="neighborhood"
+               value={formData.neighborhood}
+               onChange={(e) => setFormData({ ...formData, neighborhood: e.target.value })}
+               placeholder="Which neighborhood do you live in?"
+             />
+           </div>
+
+
+           <div className="space-y-2">
+             <Label htmlFor="phone">Phone Number</Label>
+             <Input
+               id="phone"
+               type="tel"
+               value={formData.phone}
+               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+               placeholder="(555) 123-4567"
+             />
+           </div>
+
+
+           <div className="space-y-2">
+             <Label htmlFor="bio">Bio</Label>
+             <Textarea
+               id="bio"
+               value={formData.bio}
+               onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+               placeholder="Tell us a bit about yourself..."
+               className="min-h-24"
+             />
+           </div>
+
+
+           <Button
+             type="submit"
+             disabled={updateProfileMutation.isPending}
+             className="w-full"
+           >
+             <Save className="h-4 w-4 mr-2" />
+             {updateProfileMutation.isPending ? 'Saving...' : 'Save Changes'}
+           </Button>
+         </form>
+       </CardContent>
+     </Card>
+
+
+     {/* Account Info */}
+     <Card>
+       <CardHeader>
+         <CardTitle>Account Information</CardTitle>
+       </CardHeader>
+       <CardContent className="space-y-3">
+         <div className="flex justify-between items-center py-2 border-b">
+           <span className="text-gray-600">Account Role</span>
+           <span className="font-semibold text-gray-900 capitalize">{user.role}</span>
+         </div>
+         <div className="flex justify-between items-center py-2 border-b">
+           <span className="text-gray-600">Member ID</span>
+           <span className="font-mono text-sm text-gray-900">{user.id.slice(0, 8)}...</span>
+         </div>
+         <div className="flex justify-between items-center py-2">
+           <span className="text-gray-600">Account Created</span>
+           <span className="font-semibold text-gray-900">
+             {new Date(user.created_date).toLocaleDateString('en-US', {
+               month: 'long',
+               day: 'numeric',
+               year: 'numeric'
+             })}
+           </span>
+         </div>
+       </CardContent>
+     </Card>
+   </div>
+ );
+}
+event
+{
+ "name": "Event",
+ "type": "object",
+ "properties": {
+   "title": {
+     "type": "string",
+     "description": "Event title"
+   },
+   "description": {
+     "type": "string",
+     "description": "Event description"
+   },
+   "location": {
+     "type": "string",
+     "description": "Event location"
+   },
+   "event_date": {
+     "type": "string",
+     "format": "date-time",
+     "description": "When the event takes place"
+   },
+   "category": {
+     "type": "string",
+     "enum": [
+       "town_hall",
+       "cleanup",
+       "workshop",
+       "festival",
+       "sports",
+       "education",
+       "health",
+       "other"
+     ],
+     "default": "other",
+     "description": "Event category"
+   },
+   "image_url": {
+     "type": "string",
+     "description": "Event image"
+   },
+   "capacity": {
+     "type": "number",
+     "description": "Maximum number of participants"
+   },
+   "tokens_reward": {
+     "type": "number",
+     "default": 10,
+     "description": "Tokens earned for attending"
+   },
+   "status": {
+     "type": "string",
+     "enum": [
+       "upcoming",
+       "ongoing",
+       "completed",
+       "cancelled"
+     ],
+     "default": "upcoming"
+   }
+ },
+ "required": [
+   "title",
+   "event_date"
+ ]
+}
+
+
+EventRegistration
+{
+ "name": "EventRegistration",
+ "type": "object",
+ "properties": {
+   "event_id": {
+     "type": "string",
+     "description": "Reference to Event"
+   },
+   "user_email": {
+     "type": "string",
+     "description": "User's email"
+   },
+   "status": {
+     "type": "string",
+     "enum": [
+       "registered",
+       "attended",
+       "cancelled"
+     ],
+     "default": "registered"
+   },
+   "attended_at": {
+     "type": "string",
+     "format": "date-time",
+     "description": "When user attended"
+   }
+ },
+ "required": [
+   "event_id",
+   "user_email"
+ ]
+}
+
+
+TokenTransaction
+{
+ "name": "TokenTransaction",
+ "type": "object",
+ "properties": {
+   "user_email": {
+     "type": "string",
+     "description": "User's email"
+   },
+   "amount": {
+     "type": "number",
+     "description": "Token amount (positive for earning, negative for spending)"
+   },
+   "type": {
+     "type": "string",
+     "enum": [
+       "event_attendance",
+       "post_creation",
+       "volunteer",
+       "reward_redemption",
+       "admin_adjustment"
+     ],
+     "description": "Type of transaction"
+   },
+   "reference_id": {
+     "type": "string",
+     "description": "Reference to related entity (event_id, post_id, etc.)"
+   },
+   "description": {
+     "type": "string",
+     "description": "Transaction description"
+   }
+ },
+ "required": [
+   "user_email",
+   "amount",
+   "type"
+ ]
+}
+CommunityPost
+{
+ "name": "CommunityPost",
+ "type": "object",
+ "properties": {
+   "title": {
+     "type": "string",
+     "description": "Post title"
+   },
+   "content": {
+     "type": "string",
+     "description": "Post content"
+   },
+   "category": {
+     "type": "string",
+     "enum": [
+       "announcement",
+       "discussion",
+       "question",
+       "idea",
+       "news"
+     ],
+     "default": "discussion"
+   },
+   "author_email": {
+     "type": "string",
+     "description": "Author's email"
+   },
+   "author_name": {
+     "type": "string",
+     "description": "Author's name"
+   },
+   "image_url": {
+     "type": "string",
+     "description": "Post image"
+   },
+   "likes": {
+     "type": "number",
+     "default": 0,
+     "description": "Number of likes"
+   }
+ },
+ "required": [
+   "title",
+   "content"
+ ]
+}
+Layout .js
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from './utils';
+import { base44 } from '@/api/base44Client';
+import { Button } from '@/components/ui/button';
+import { Menu, X, Home, Calendar, MessageSquare, Award, User, LogOut } from 'lucide-react';
+
+
+export default function Layout({ children, currentPageName }) {
+ const [user, setUser] = useState(null);
+ const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+
+ useEffect(() => {
+   const loadUser = async () => {
+     try {
+       const currentUser = await base44.auth.me();
+       setUser(currentUser);
+     } catch (error) {
+       setUser(null);
+     }
+   };
+   loadUser();
+ }, []);
+
+
+ const navigation = [
+   { name: 'Home', href: createPageUrl('Home'), icon: Home },
+   { name: 'Events', href: createPageUrl('Events'), icon: Calendar },
+   { name: 'Community', href: createPageUrl('Community'), icon: MessageSquare },
+   { name: 'Tokens', href: createPageUrl('Tokens'), icon: Award },
+ ];
+
+
+ return (
+   <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+     {/* Header */}
+     <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+         <div className="flex justify-between items-center h-16">
+           {/* Logo */}
+           <Link to={createPageUrl('Home')} className="flex items-center space-x-2">
+             <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
+               <span className="text-white font-bold text-lg">CC</span>
+             </div>
+             <span className="text-xl font-bold text-gray-900 hidden sm:block">County Community</span>
+           </Link>
+
+
+           {/* Desktop Navigation */}
+           <nav className="hidden md:flex space-x-1">
+             {navigation.map((item) => {
+               const Icon = item.icon;
+               const isActive = currentPageName === item.name;
+               return (
+                 <Link
+                   key={item.name}
+                   to={item.href}
+                   className={flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
+                     isActive
+                       ? 'bg-blue-100 text-blue-700 font-semibold'
+                       : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                   }}
+                 >
+                   <Icon className="h-4 w-4" />
+                   <span>{item.name}</span>
+                 </Link>
+               );
+             })}
+           </nav>
+
+
+           {/* User Section */}
+           <div className="flex items-center space-x-4">
+             {user ? (
+               <>
+                 <div className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-amber-100 to-yellow-100 px-4 py-2 rounded-full">
+                   <Award className="h-4 w-4 text-amber-600" />
+                   <span className="font-semibold text-amber-900">{user.token_balance || 0} Tokens</span>
+                 </div>
+                 <Link to={createPageUrl('Profile')}>
+                   <Button variant="ghost" size="icon" className="rounded-full">
+                     <User className="h-5 w-5" />
+                   </Button>
+                 </Link>
+                 <Button
+                   variant="ghost"
+                   size="icon"
+                   onClick={() => base44.auth.logout()}
+                   className="hidden md:flex"
+                 >
+                   <LogOut className="h-5 w-5" />
+                 </Button>
+               </>
+             ) : (
+               <Button onClick={() => base44.auth.redirectToLogin()}>
+                 Sign In
+               </Button>
+             )}
+
+
+             {/* Mobile menu button */}
+             <button
+               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+               className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100"
+             >
+               {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+             </button>
+           </div>
+         </div>
+       </div>
+
+
+       {/* Mobile Navigation */}
+       {mobileMenuOpen && (
+         <div className="md:hidden border-t border-gray-200 bg-white">
+           <div className="px-4 py-3 space-y-1">
+             {navigation.map((item) => {
+               const Icon = item.icon;
+               const isActive = currentPageName === item.name;
+               return (
+                 <Link
+                   key={item.name}
+                   to={item.href}
+                   onClick={() => setMobileMenuOpen(false)}
+                   className={flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
+                     isActive
+                       ? 'bg-blue-100 text-blue-700 font-semibold'
+                       : 'text-gray-600 hover:bg-gray-100'
+                   }}
+                 >
+                   <Icon className="h-5 w-5" />
+                   <span>{item.name}</span>
+                 </Link>
+               );
+             })}
+             {user && (
+               <button
+                 onClick={() => {
+                   base44.auth.logout();
+                   setMobileMenuOpen(false);
+                 }}
+                 className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-100 w-full"
+               >
+                 <LogOut className="h-5 w-5" />
+                 <span>Sign Out</span>
+               </button>
+             )}
+           </div>
+         </div>
+       )}
+     </header>
+
+
+     {/* Main Content */}
+     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+       {children}
+     </main>
+
+
+     {/* Footer */}
+     <footer className="bg-white border-t border-gray-200 mt-16">
+       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+         <div className="text-center text-gray-600">
+           <p className="text-sm">© 2024 County Community. Building stronger neighborhoods together.</p>
+         </div>
+       </div>
+     </footer>
+   </div>
+ );
+}
+ChatGPT의 말:
+
+1m 10s 동안 생각함
+오케이, 이 정도면 진짜 “초기 버전 MVP”가 아니라 거의 완성형이야 😎
+이제 여기서 보안 / 익명성 / 살짝 위험한 부분 / UX 디테일만 딱 짚어줄게.
+
+1. 전체 코드 한 번에 보고 느껴지는 것 요약
+✅ 구조:
+
+Layout + Home / Events / Tokens / Community / Profile 깔끔하게 잘 나뉘어 있음
+
+Base44 entities 설계랑 화면이 잘 연결되어 있음 (Event, EventRegistration, TokenTransaction, CommunityPost)
+
+✅ UI/UX:
+
+톤: 연노랑/블루 베이스, 공공 커뮤니티 + 따뜻한 느낌 잘 살아 있음
+
+카드 + 그리드 레이아웃, 아이콘 사용 좋음 (lucide-react, shadcn/ui)
+
+✅ 기본 보안:
+
+auth.me()를 통해 인증된 사용자만 토큰/등록/포스트 작성 등 접근
+
+이메일 등 민감 정보는 주로 백엔드 쿼리용으로만 사용 (화면엔 거의 안 보임)
+
+근데 “커뮤니티 + 토큰 시스템 + 익명성 + 보안” 관점에서 두 가지가 제일 중요해:
+
+토큰/포인트 관련 로직이 지금은 프론트에 너무 많이 있음
+
+커뮤니티 게시판에서 author_name = full_name 그대로 쓰는 부분 → 익명성/프라이버시 이슈
+
+나머지는 전부 “개선하면 더 좋다” 레벨이야.
+
+2. 제일 중요한 보안 포인트: 토큰 조작 가능성 🔐
+문제 되는 부분 (Community.tsx)
+const createPostMutation = useMutation({
+  mutationFn: async (postData) => {
+    await base44.entities.CommunityPost.create(postData);
+    await base44.entities.TokenTransaction.create({
+      user_email: user.email,
+      amount: 5,
+      type: 'post_creation',
+      description: 'Created a community post'
+    });
+    const updatedUser = await base44.auth.me();
+    await base44.auth.updateMe({ token_balance: (updatedUser.token_balance || 0) + 5 });
+  },
+  ...
+});
+여기서:
+
+프런트에서 직접:
+
+TokenTransaction.create 호출
+
+auth.updateMe({ token_balance: ... }) 호출
+
+즉, DevTools 열고 JS 콘솔에서 이 코드만 흉내 내도:
+
+마음대로 TokenTransaction 만들고
+
+마음대로 token_balance 올릴 수 있음
+
+Base44가 권한/ACL을 잘 막아두면 백엔드에서 막히긴 하겠지만,
+“설계 관점”에서는 토큰/포인트/머니처럼 가치 있는 값은 프런트에서 바꾸지 않는 게 원칙이야.
+
+그래서 어떻게 바꾸는 게 이상적인지
+개념적 패턴은 이거야:
+
+프런트:
+
+“새 글 작성” → 백엔드 함수 하나만 호출 (예: createPostWithTokens)
+
+백엔드 함수 (Base44 function / server function 등):
+
+현재 유저 확인 (auth context 기반)
+
+CommunityPost.create로 글 생성
+
+TokenTransaction.create 기록
+
+auth.updateMe로 token_balance 증가
+
+필요하면 감사 로그 / 레이트 리밋 처리
+
+프런트 코드 예시는 이렇게 “함수 하나만 호출” 모양으로 정리하는 게 좋아:
+
+const createPostMutation = useMutation({
+  mutationFn: async (postData) => {
+    // ⚠️ 예시: 실제 함수 이름/경로는 Base44 설정에 맞게
+    return base44.functions.createPostWithTokens(postData);
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries(['community-posts']);
+    queryClient.invalidateQueries(['token-transactions']);
+    toast.success('Post created! You earned 5 tokens.');
+  },
+});
+백엔드 함수 안에서만 토큰 증감이 일어나게 하면:
+
+프런트는 “토큰을 바꾸는 권한” 자체가 없음
+
+DevTools로 장난쳐도 “토큰 수치는 서버가 계산”이라 조작 불가
+
+✨ 요약:
+지금 구조는 “프론트 권한이 너무 쎈 상태” →
+토큰 관련 비즈니스 로직은 전부 백엔드 함수로 옮기기.
+
+3. 익명성 / 실명 노출 포인트 👤
+Community 게시판
+createPostMutation.mutate({
+  ...newPost,
+  author_email: user.email,
+  author_name: user.full_name,
+});
+그리고 렌더링:
+
+<p className="text-sm text-gray-600">
+  By {post.author_name || 'Community Member'}
+</p>
+지금 상태:
+
+author_email은 DB용 → 화면에는 안 나와서 OK
+
+author_name에 full_name 넣고 그대로 보여 줌 → 실명 커뮤니티
+
+너가 전에 말한 것처럼, **“커뮤니티라면 어느 정도 익명/가명 모드가 필요”**하니까, 이런 식으로 바꾸는 걸 추천:
+
+개선 아이디어 1: “닉네임 / display_name” 필드 도입
+Profile에 닉네임 필드 하나 추가 (예: display_name):
+
+const [formData, setFormData] = useState({
+  full_name: '',
+  display_name: '',   // ✨ new
+  neighborhood: '',
+  phone: '',
+  bio: '',
+});
+저장 시에도 포함:
+
+updateProfileMutation.mutate({
+  full_name: formData.full_name,
+  display_name: formData.display_name,
+  neighborhood: formData.neighborhood,
+  phone: formData.phone,
+  bio: formData.bio,
+});
+CommunityPost.create할 때는 full_name 대신 display_name 사용:
+
+createPostMutation.mutate({
+  ...newPost,
+  author_email: user.email,
+  author_name: user.display_name || 'Community Member',
+});
+화면에선 그대로 post.author_name 쓰면 됨 → 이 값은 이미 “가명/닉네임”
+
+이렇게 하면:
+
+백엔드는 여전히 author_email로 누가 썼는지 알 수 있고
+
+화면에 보이는 이름은 닉네임/동네 기반 이름이라 덜 위험함
+
+개선 아이디어 2: 기본값을 “동네 기반 가명”으로
+닉네임 안 적은 경우:
+
+const safeAuthorName =
+  post.author_name ||
+  (post.neighborhood ? `Neighbor in ${post.neighborhood}` : 'Community Member');
+혹은:
+
+By {user.display_name || user.neighborhood || 'Community Member'}
+이렇게 하면 청소년/학생도 실명 노출 없이 참여 가능해.
+
+4. 작은 코드/UX 디테일들 (버그는 아니지만 다듬으면 좋은 것들)
+4-1. category / type 안전하게 처리
+지금 categoryColors[event.category] / typeIcons[transaction.type] 이런 식으로 바로 인덱싱 중인데,
+만약 enum 밖 값이 들어오면 undefined 될 수 있어.
+
+<Badge className={categoryColors[event.category] || 'bg-gray-100 text-gray-800'}>
+  {event.category.replace(/_/g, ' ')}
+</Badge>
+const typeConfig = typeIcons[transaction.type] || typeIcons.admin_adjustment;
+Tokens 쪽은 이미 fallback 잘 넣어둠 ✅
+Events / Community는 fallback 한 줄만 추가하면 완전 안전해.
+
+4-2. 로딩 상태 UX
+지금 패턴:
+
+const { data: events = [] } = useQuery(...)
+데이터 로딩 중일 때도 일단 []로 시작 → “No events yet”가 잠깐 보였다가 리스트 뜰 수도 있음
+
+선택사항이지만, 이런 식으로 분리하면 더 깔끔해:
+
+const { data: events = [], isLoading } = useQuery(...);
+
+if (isLoading) {
+  return (
+    <div className="text-center py-12 text-gray-500">
+      Loading events...
+    </div>
+  );
+}
+아니면 그리드 안에 isLoading일 때 skeleton/card 하나 보여주는 식도 가능.
+
+4-3. Profile: 민감 정보 취급
+Profile 페이지에서:
+
+phone 필드 그대로 저장
+
+화면에는 안 나가지만, 나중에 다른 화면에서 실수로 노출될 수 있으니까 문서/주석에서 명확하게 해두면 좋아
+
+예를 들어 Profile 밑에 작은 문구:
+
+“Your phone number is only used for county notifications and is never shown on public pages.”
+
+이런 거 추가해두면 UX + 프라이버시 투명성 다 잡힘.
+
+4-4. 중복되는 auth.me() 호출
+각 페이지에서 전부:
+
+useEffect(() => {
+  const loadUser = async () => {
+    const currentUser = await base44.auth.me();
+    setUser(currentUser);
+  };
+  loadUser();
+}, []);
+이건 성능/구조 문제이지, 보안 문제는 아니야.
+나중에 리팩토링할 때:
+
+useQuery(['me'], base44.auth.me)
+
+또는 UserContext 하나 만들어서 글로벌로 공유
+
+하면 네트워크 호출 줄이고 코드를 더 깔끔하게 만들 수 있어.
+
+5. 이 코드에 대한 “보안 가이드라인 적용 설명” 짧은 영어 버전 ✍️
+발표/문서에 넣을 수 있게, 지금 구조를 설명하는 문단도 하나 만들어 줄게:
+
+Our County Community app follows standard web security practices while still supporting a friendly, neighborhood-style experience.
+
+Authentication and token storage are handled by Base44’s built-in auth system, so secrets and access tokens are never exposed in the frontend.
+
+All sensitive writes—especially token rewards—are designed to be moved into backend functions, so users cannot manipulate their own balances from the browser.
+
+On the community board, we use email only as an internal identifier and expose a nickname or neighborhood-based display name instead of a full legal name.
+
+User-generated content is stored as plain text and rendered safely by React (no raw HTML injection), and we can add both frontend and backend validation to limit length and abusive content.
+
+The platform enforces HTTPS by default, and we can add rate limiting and audit logging through backend logic if needed for abuse prevention or compliance.
+
+정리해주면
+토큰 관련 로직: 프론트에서 직접 TokenTransaction + updateMe →
+👉 “백엔드 함수 하나”로 몰아서 처리하기 (보안상 매우 중요)
+
+익명성: author_name = full_name →
+👉 display_name 필드 추가해서 닉네임/동네 기반 이름만 노출
+
+작은 안정성 개선:
+
+category/type fallback 클래스
+
+로딩 상태 UX
+
+Profile에서 민감정보 사용 목적 설명
+
+원하면 내가 Community.tsx 개선 버전을
+
+“닉네임 기반 + 백엔드 함수 호출 전제”로 한 번 통째로 리팩터링 코드도 만들어 줄 수 있어.
+
+나의 말:
+ㅇㅋ 그러면 이번에 처음에 준 파일에 마춰서 코드 수정해서 스크립트 따로따로 줘 base44 흔적은 전부 지워서 영어로
+ChatGPT의 말:
+
+5m 15s 동안 생각함
+좋다, 이제 Base44 거 싹 빼버린 순수 React 버전으로 깔끔하게 정리해서 파일별로 줄게 😊
+(설명은 한국어, 코드/주석은 전부 영어로 했어.)
+
+아래 코드는 네가 올린 구조에 맞춰서:
+
+utils
+
+Layout
+
+Home
+
+Events
+
+Tokens
+
+Community
+
+Profile
+
+요렇게 각각 따로 다시 짠 거야.
+Base44, React Query, Sonner 전부 제거했고, 대신 간단한 mock 데이터 + 로컬 상태로만 동작하게 만들어놨어.
+
+0. utils.ts
+// src/utils.ts
+export function createPageUrl(pageName: string): string {
+  switch (pageName) {
+    case 'Home':
+      return '/';
+    case 'Events':
+      return '/events';
+    case 'Community':
+      return '/community';
+    case 'Tokens':
+      return '/tokens';
+    case 'Profile':
+      return '/profile';
+    default:
+      return '/';
+  }
+}
+1. Layout (Layout.tsx / Layout.jsx)
+// src/Layout.tsx
+import React, { useState, useEffect, ReactNode } from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from './utils';
+import {
+  Menu,
+  X,
+  Home as HomeIcon,
+  Calendar,
+  MessageSquare,
+  Award,
+  User,
+  LogOut,
+} from 'lucide-react';
+
+type LayoutProps = {
+  children: ReactNode;
+  currentPageName: string;
+};
+
+const DEMO_USER = {
+  id: 'demo-user-1',
+  email: 'demo.resident@example.com',
+  full_name: 'Demo Resident',
+  token_balance: 2450,
+  role: 'resident',
+  created_date: '2024-01-15T00:00:00Z',
+};
+
+export default function Layout({ children, currentPageName }: LayoutProps) {
+  const [user, setUser] = useState<typeof DEMO_USER | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    // In a real app, replace this with a call to your auth API (e.g., /api/me)
+    setUser(DEMO_USER);
+  }, []);
+
+  const navigation = [
+    { name: 'Home', href: createPageUrl('Home'), icon: HomeIcon },
+    { name: 'Events', href: createPageUrl('Events'), icon: Calendar },
+    { name: 'Community', href: createPageUrl('Community'), icon: MessageSquare },
+    { name: 'Tokens', href: createPageUrl('Tokens'), icon: Award },
+  ];
+
+  const handleSignOut = () => {
+    // Replace with real logout logic later
+    setUser(null);
+  };
+
+  const handleSignIn = () => {
+    // Replace with redirect to login page later
+    setUser(DEMO_USER);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+      {/* Header */}
+      <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <Link to={createPageUrl('Home')} className="flex items-center space-x-2">
+              <div className="h-10 w-10 bg-gradient-to-br from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">CC</span>
+              </div>
+              <span className="text-xl font-bold text-gray-900 hidden sm:block">
+                County Community
+              </span>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex space-x-1">
+              {navigation.map((item) => {
+                const Icon = item.icon;
+                const isActive = currentPageName === item.name;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
+                      isActive
+                        ? 'bg-blue-100 text-blue-700 font-semibold'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{item.name}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* User Section */}
+            <div className="flex items-center space-x-4">
+              {user ? (
+                <>
+                  <div className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-amber-100 to-yellow-100 px-4 py-2 rounded-full">
+                    <Award className="h-4 w-4 text-amber-600" />
+                    <span className="font-semibold text-amber-900">
+                      {user.token_balance || 0} Tokens
+                    </span>
+                  </div>
+                  <Link to={createPageUrl('Profile')}>
+                    <button
+                      type="button"
+                      className="rounded-full p-2 text-gray-700 hover:bg-gray-100"
+                    >
+                      <User className="h-5 w-5" />
+                    </button>
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    className="hidden md:flex rounded-full p-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    <LogOut className="h-5 w-5" />
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSignIn}
+                  className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                >
+                  Sign In
+                </button>
+              )}
+
+              {/* Mobile menu button */}
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100"
+              >
+                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200 bg-white">
+            <div className="px-4 py-3 space-y-1">
+              {navigation.map((item) => {
+                const Icon = item.icon;
+                const isActive = currentPageName === item.name;
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
+                      isActive
+                        ? 'bg-blue-100 text-blue-700 font-semibold'
+                        : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span>{item.name}</span>
+                  </Link>
+                );
+              })}
+              {user && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleSignOut();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-100 w-full"
+                >
+                  <LogOut className="h-5 w-5" />
+                  <span>Sign Out</span>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">{children}</main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-gray-200 mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center text-gray-600">
+            <p className="text-sm">
+              © 2024 County Community. Building stronger neighborhoods together.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+2. Home (Home.tsx / Home.jsx)
+✅ 변경 포인트
+base44, useQuery 전부 삭제
+
+간단한 MOCK_UPCOMING_EVENTS, MOCK_RECENT_POSTS 사용
+
+Button/Card 등은 파일 안에 로컬 미니 컴포넌트로 정의
+
+// src/pages/Home.tsx
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '../utils';
+import { Calendar, Users, Award, TrendingUp, ArrowRight, Sparkles } from 'lucide-react';
+import { format } from 'date-fns';
+
+const MOCK_UPCOMING_EVENTS = [
+  {
+    id: '1',
+    title: 'Neighborhood Clean-up',
+    event_date: '2025-12-20T10:00:00Z',
+    image_url: '',
+    tokens_reward: 150,
+    status: 'upcoming',
+  },
+  {
+    id: '2',
+    title: 'Teen Coding Night',
+    event_date: '2025-12-22T18:00:00Z',
+    image_url: '',
+    tokens_reward: 100,
+    status: 'upcoming',
+  },
+  {
+    id: '3',
+    title: 'Community Town Hall',
+    event_date: '2025-12-25T19:00:00Z',
+    image_url: '',
+    tokens_reward: 120,
+    status: 'upcoming',
+  },
+];
+
+const MOCK_RECENT_POSTS = [
+  {
+    id: '1',
+    category: 'news',
+    created_date: '2025-12-05T09:00:00Z',
+    title: 'New Community Garden Opening',
+    content: 'We are excited to announce a new community garden in the Riverside neighborhood...',
+    author_name: 'Community Member',
+  },
+  {
+    id: '2',
+    category: 'discussion',
+    created_date: '2025-12-03T14:30:00Z',
+    title: 'Ideas for Youth Programs',
+    content: 'What kind of activities would you like to see for teens next spring?',
+    author_name: 'Alex P.',
+  },
+  {
+    id: '3',
+    category: 'announcement',
+    created_date: '2025-12-01T11:15:00Z',
+    title: 'Holiday Schedule Updates',
+    content: 'Here is the updated holiday schedule for county services...',
+    author_name: 'County Staff',
+  },
+];
+
+export default function Home() {
+  const upcomingEvents = MOCK_UPCOMING_EVENTS;
+  const recentPosts = MOCK_RECENT_POSTS;
+
+  return (
+    <div className="space-y-12">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-blue-700 to-green-600 text-white p-8 md:p-12">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-32 translate-x-32" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full translate-y-32 -translate-x-32" />
+
+        <div className="relative z-10 max-w-3xl">
+          <div className="flex items-center space-x-2 mb-4">
+            <Sparkles className="h-6 w-6" />
+            <span className="text-blue-100 font-medium">Welcome to Your Community</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Building Stronger Neighborhoods Together
+          </h1>
+          <p className="text-xl text-blue-100 mb-8">
+            Connect with your neighbors, participate in local events, and earn rewards for making
+            our community better.
+          </p>
+          <Button
+            onClick={() => alert('TODO: connect this button to your login or signup flow')}
+            className="bg-white text-blue-600 hover:bg-blue-50"
+          >
+            Join Our Community
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="border-2 border-blue-100 bg-gradient-to-br from-blue-50 to-white">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg text-gray-700">Active Events</CardTitle>
+              <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+                <Calendar className="h-6 w-6 text-blue-600" />
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-blue-600">{upcomingEvents.length}+</p>
+            <p className="text-sm text-gray-600 mt-1">Happening this month</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-2 border-green-100 bg-gradient-to-br from-green-50 to-white">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg text-gray-700">Community Members</CardTitle>
+              <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
+                <Users className="h-6 w-6 text-green-600" />
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-green-600">500+</p>
+            <p className="text-sm text-gray-600 mt-1">And growing</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-2 border-amber-100 bg-gradient-to-br from-amber-50 to-white">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg text-gray-700">Tokens Earned</CardTitle>
+              <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center">
+                <Award className="h-6 w-6 text-amber-600" />
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-amber-600">10,000+</p>
+            <p className="text-sm text-gray-600 mt-1">By our community</p>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Upcoming Events */}
+      <section>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-3xl font-bold text-gray-900">Upcoming Events</h2>
+          <Link to={createPageUrl('Events')}>
+            <Button variant="ghost" className="text-blue-600">
+              View All
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {upcomingEvents.map((event) => (
+            <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="h-40 bg-gradient-to-br from-blue-400 to-green-400 relative">
+                {event.image_url && (
+                  <img
+                    src={event.image_url}
+                    alt={event.title}
+                    className="w-full h-full object-cover"
+                  />
+                )}
+                <div className="absolute top-3 right-3 bg-amber-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                  +{event.tokens_reward} tokens
+                </div>
+              </div>
+              <CardHeader>
+                <CardTitle className="text-lg">{event.title}</CardTitle>
+                <div className="flex items-center text-sm text-gray-600 mt-2">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  {format(new Date(event.event_date), 'MMM d, yyyy • h:mm a')}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Link to={createPageUrl('Events')}>
+                  <Button className="w-full">Learn More</Button>
+                </Link>
+              </CardContent>
+            </Card>
+          ))}
+          {upcomingEvents.length === 0 && (
+            <div className="col-span-3 text-center py-12 text-gray-500">
+              <Calendar className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+              <p>No upcoming events yet. Check back soon!</p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Community Highlights */}
+      <section>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-3xl font-bold text-gray-900">Community Highlights</h2>
+          <Link to={createPageUrl('Community')}>
+            <Button variant="ghost" className="text-blue-600">
+              View All
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {recentPosts.map((post) => (
+            <Card key={post.id} className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-semibold text-blue-600 uppercase">
+                    {post.category}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    {format(new Date(post.created_date), 'MMM d')}
+                  </span>
+                </div>
+                <CardTitle className="text-lg">{post.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 line-clamp-3">{post.content}</p>
+                <div className="mt-4 flex items-center text-sm text-gray-500">
+                  <span>By {post.author_name || 'Community Member'}</span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+          {recentPosts.length === 0 && (
+            <div className="col-span-3 text-center py-12 text-gray-500">
+              <TrendingUp className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+              <p>No posts yet. Be the first to share!</p>
+            </div>
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+/* Minimal UI helpers for this page */
+
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: 'solid' | 'ghost';
+};
+
+function Button({ className = '', variant = 'solid', children, ...props }: ButtonProps) {
+  const base =
+    'inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500';
+  const styles =
+    variant === 'ghost'
+      ? 'bg-transparent text-blue-600 hover:bg-blue-50'
+      : 'bg-blue-600 text-white hover:bg-blue-700';
+  return (
+    <button className={`${base} ${styles} ${className}`} {...props}>
+      {children}
+    </button>
+  );
+}
+
+type SimpleProps = {
+  className?: string;
+  children: React.ReactNode;
+};
+
+function Card({ className = '', children }: SimpleProps) {
+  return (
+    <div className={`rounded-2xl bg-white border border-gray-200 shadow-sm ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+function CardHeader({ className = '', children }: SimpleProps) {
+  return <div className={`px-4 pt-4 pb-2 ${className}`}>{children}</div>;
+}
+
+function CardContent({ className = '', children }: SimpleProps) {
+  return <div className={`px-4 pb-4 ${className}`}>{children}</div>;
+}
+
+function CardTitle({ className = '', children }: SimpleProps) {
+  return <h3 className={`font-semibold text-gray-900 ${className}`}>{children}</h3>;
+}
+3. Events (Events.tsx / Events.jsx)
+// src/pages/Events.tsx
+import React, { useState } from 'react';
+import { Calendar, MapPin, Users, Award, CheckCircle, Clock } from 'lucide-react';
+import { format } from 'date-fns';
+
+const MOCK_EVENTS = [
+  {
+    id: '1',
+    title: 'Neighborhood Clean-up',
+    description: 'Help clean up Riverside Park and earn tokens for your contribution.',
+    location: 'Riverside Park',
+    event_date: '2025-12-20T10:00:00Z',
+    category: 'cleanup',
+    image_url: '',
+    capacity: 40,
+    tokens_reward: 150,
+    status: 'upcoming',
+  },
+  {
+    id: '2',
+    title: 'Teen Coding Night',
+    description: 'Learn the basics of web development in a fun, hands-on workshop.',
+    location: 'Community Tech Center',
+    event_date: '2025-12-22T18:00:00Z',
+    category: 'workshop',
+    image_url: '',
+    capacity: 30,
+    tokens_reward: 100,
+    status: 'upcoming',
+  },
+  {
+    id: '3',
+    title: 'Holiday Festival',
+    description: 'Celebrate the season with music, food, and local vendors.',
+    location: 'Main Square',
+    event_date: '2025-12-24T16:00:00Z',
+    category: 'festival',
+    image_url: '',
+    capacity: 200,
+    tokens_reward: 80,
+    status: 'upcoming',
+  },
+];
+
+const CATEGORY_LABELS: Record<string, string> = {
+  all: 'All Events',
+  town_hall: 'Town Hall',
+  cleanup: 'Cleanup',
+  workshop: 'Workshop',
+  festival: 'Festival',
+};
+
+const categoryColors: Record<string, string> = {
+  town_hall: 'bg-blue-100 text-blue-800',
+  cleanup: 'bg-green-100 text-green-800',
+  workshop: 'bg-purple-100 text-purple-800',
+  festival: 'bg-pink-100 text-pink-800',
+  sports: 'bg-orange-100 text-orange-800',
+  education: 'bg-indigo-100 text-indigo-800',
+  health: 'bg-red-100 text-red-800',
+  other: 'bg-gray-100 text-gray-800',
+};
+
+export default function Events() {
+  const [selectedCategory, setSelectedCategory] = useState<'all' | string>('all');
+  const [registrations, setRegistrations] = useState<string[]>([]);
+
+  const filteredEvents =
+    selectedCategory === 'all'
+      ? MOCK_EVENTS
+      : MOCK_EVENTS.filter((e) => e.category === selectedCategory);
+
+  const isRegistered = (eventId: string) => registrations.includes(eventId);
+
+  const handleRegister = (eventId: string) => {
+    if (isRegistered(eventId)) return;
+    setRegistrations((prev) => [...prev, eventId]);
+    alert('Successfully registered for the event! (demo)');
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-gray-900 mb-3">Community Events</h1>
+        <p className="text-lg text-gray-600">
+          Join events and earn tokens while making our community better
+        </p>
+      </div>
+
+      {/* Filters */}
+      <div className="flex justify-center">
+        <div className="inline-flex rounded-full bg-white border border-gray-200 p-1">
+          {['all', 'town_hall', 'cleanup', 'workshop', 'festival'].map((value) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setSelectedCategory(value)}
+              className={`px-3 py-1 text-sm rounded-full mx-1 ${
+                selectedCategory === value
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              {CATEGORY_LABELS[value]}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Events Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredEvents.map((event) => {
+          const registered = isRegistered(event.id);
+          return (
+            <Card key={event.id} className="overflow-hidden hover:shadow-xl transition-all">
+              <div className="h-48 bg-gradient-to-br from-blue-400 to-green-400 relative">
+                {event.image_url && (
+                  <img
+                    src={event.image_url}
+                    alt={event.title}
+                    className="w-full h-full object-cover"
+                  />
+                )}
+                <div className="absolute top-4 right-4 bg-amber-500 text-white px-3 py-1 rounded-full text-sm font-bold flex items-center space-x-1">
+                  <Award className="h-4 w-4" />
+                  <span>+{event.tokens_reward}</span>
+                </div>
+                {event.status === 'completed' && (
+                  <div className="absolute top-4 left-4 bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    Completed
+                  </div>
+                )}
+              </div>
+              <CardHeader>
+                <div className="flex items-start justify-between mb-2">
+                  <Badge className={categoryColors[event.category] || categoryColors.other}>
+                    {event.category.replace(/_/g, ' ')}
+                  </Badge>
+                </div>
+                <CardTitle className="text-xl">{event.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600 line-clamp-2">{event.description}</p>
+
+                <div className="space-y-2">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Calendar className="h-4 w-4 mr-2 text-blue-600" />
+                    {format(new Date(event.event_date), 'MMM d, yyyy • h:mm a')}
+                  </div>
+                  {event.location && (
+                    <div className="flex items-center text-sm text-gray-600">
+                      <MapPin className="h-4 w-4 mr-2 text-green-600" />
+                      {event.location}
+                    </div>
+                  )}
+                  {event.capacity && (
+                    <div className="flex items-center text-sm text-gray-600">
+                      <Users className="h-4 w-4 mr-2 text-purple-600" />
+                      Max {event.capacity} participants
+                    </div>
+                  )}
+                </div>
+
+                {registered ? (
+                  <Button disabled className="w-full" variant="secondary">
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    Registered
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => handleRegister(event.id)}
+                    disabled={event.status !== 'upcoming'}
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Clock className="h-4 w-4 mr-2" />
+                    Register Now
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+
+      {filteredEvents.length === 0 && (
+        <div className="text-center py-16">
+          <Calendar className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">No Events Found</h3>
+          <p className="text-gray-500">Check back later for upcoming community events.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* Minimal UI helpers */
+
+type SimpleProps = {
+  className?: string;
+  children: React.ReactNode;
+};
+
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: 'primary' | 'secondary';
+};
+
+function Button({ className = '', variant = 'primary', children, ...props }: ButtonProps) {
+  const base =
+    'inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500';
+  const styles =
+    variant === 'secondary'
+      ? 'bg-gray-100 text-gray-700 cursor-default'
+      : 'bg-blue-600 text-white hover:bg-blue-700';
+  return (
+    <button className={`${base} ${styles} ${className}`} {...props}>
+      {children}
+    </button>
+  );
+}
+
+function Card({ className = '', children }: SimpleProps) {
+  return (
+    <div className={`rounded-2xl bg-white border border-gray-200 shadow-sm ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+function CardHeader({ className = '', children }: SimpleProps) {
+  return <div className={`px-4 pt-4 pb-2 ${className}`}>{children}</div>;
+}
+
+function CardContent({ className = '', children }: SimpleProps) {
+  return <div className={`px-4 pb-4 ${className}`}>{children}</div>;
+}
+
+function CardTitle({ className = '', children }: SimpleProps) {
+  return <h3 className={`font-semibold text-gray-900 ${className}`}>{children}</h3>;
+}
+
+function Badge({ className = '', children }: SimpleProps) {
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${className}`}
+    >
+      {children}
+    </span>
+  );
+}
+4. Tokens (Tokens.tsx / Tokens.jsx)
+// src/pages/Tokens.tsx
+import React from 'react';
+import {
+  Award,
+  TrendingUp,
+  Calendar as CalendarIcon,
+  Users,
+  ArrowUpRight,
+  ArrowDownRight,
+} from 'lucide-react';
+import { format } from 'date-fns';
+
+const MOCK_TRANSACTIONS = [
+  {
+    id: '1',
+    user_email: 'demo.resident@example.com',
+    amount: 150,
+    type: 'event_attendance',
+    description: 'Neighborhood Clean-up',
+    created_date: '2025-12-20T12:00:00Z',
+  },
+  {
+    id: '2',
+    user_email: 'demo.resident@example.com',
+    amount: 100,
+    type: 'event_attendance',
+    description: 'Teen Coding Night',
+    created_date: '2025-12-22T20:00:00Z',
+  },
+  {
+    id: '3',
+    user_email: 'demo.resident@example.com',
+    amount: -80,
+    type: 'reward_redemption',
+    description: 'Discount at local café',
+    created_date: '2025-12-23T10:30:00Z',
+  },
+];
+
+const typeIcons: Record<
+  string,
+  { icon: React.ComponentType<{ className?: string }>; color: string; bg: string }
+> = {
+  event_attendance: { icon: CalendarIcon, color: 'text-blue-600', bg: 'bg-blue-100' },
+  post_creation: { icon: Users, color: 'text-purple-600', bg: 'bg-purple-100' },
+  volunteer: { icon: TrendingUp, color: 'text-green-600', bg: 'bg-green-100' },
+  reward_redemption: { icon: Award, color: 'text-amber-600', bg: 'bg-amber-100' },
+  admin_adjustment: { icon: Award, color: 'text-gray-600', bg: 'bg-gray-100' },
+};
+
+export default function Tokens() {
+  const transactions = MOCK_TRANSACTIONS;
+
+  const totalEarned = transactions
+    .filter((t) => t.amount > 0)
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const totalSpent = Math.abs(
+    transactions.filter((t) => t.amount < 0).reduce((sum, t) => sum + t.amount, 0),
+  );
+
+  const currentBalance = totalEarned - totalSpent;
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-gray-900 mb-3">Your Tokens</h1>
+        <p className="text-lg text-gray-600">Earned through community participation</p>
+      </div>
+
+      {/* Balance Card */}
+      <Card className="border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50">
+        <CardHeader>
+          <CardTitle className="text-center text-gray-700">Current Balance</CardTitle>
+        </CardHeader>
+        <CardContent className="text-center">
+          <div className="flex items-center justify-center space-x-3 mb-4">
+            <Award className="h-12 w-12 text-amber-600" />
+            <span className="text-6xl font-bold text-amber-600">{currentBalance}</span>
+          </div>
+          <p className="text-gray-600">Community Tokens</p>
+        </CardContent>
+      </Card>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card className="border-l-4 border-l-green-500">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg text-gray-700">Total Earned</CardTitle>
+              <ArrowUpRight className="h-5 w-5 text-green-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-green-600">{totalEarned}</p>
+            <p className="text-sm text-gray-600 mt-1">All time earnings</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-l-4 border-l-red-500">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg text-gray-700">Total Redeemed</CardTitle>
+              <ArrowDownRight className="h-5 w-5 text-red-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-3xl font-bold text-red-600">{totalSpent}</p>
+            <p className="text-sm text-gray-600 mt-1">All time redemptions</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Transaction History */}
+      <Card>
+        <Card
